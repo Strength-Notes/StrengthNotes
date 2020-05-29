@@ -1,15 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Calendar } from 'react-native-calendario';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import TrainingView from './screens/TrainingView';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Calendar
-        onChange={date => {console.log(date.startDate)}}
-        disableRange  
-      />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="TrainingView" component={TrainingView} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

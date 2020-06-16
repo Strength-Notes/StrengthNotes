@@ -8,7 +8,7 @@ export default class TrainingCalendar extends React.Component {
     return (
       <View>
         <Calendar
-          onChange={range => this.props.navigation.navigate('TrainingDay')}
+          onChange={range => this.props.navigation.navigate('TrainingDay', { range })}
           disableRange
         />
       </View>

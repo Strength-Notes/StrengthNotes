@@ -1,7 +1,31 @@
 import React from 'react';
-import { StyleSheet, FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+const Tab = createMaterialTopTabNavigator()
 
 export default class TrainingDay extends React.Component {
+
+  render() {
+    let todayDate = this.props.route.params.range.startDate
+    let tomorrowDate = new Date()
+    tomorrowDate.setDate(todayDate.getDate() + 1)
+    let yesterdayDate = new Date()
+    yesterdayDate.setDate(todayDate.getDate() - 1)
+
+    return (
+      <Tab.Navigator
+        initialRouteName={todayDate.toDateString()}
+      >
+        <Tab.Screen name={yesterdayDate.toDateString()} component={Today} />
+        <Tab.Screen name={todayDate.toDateString()} component={Today} />
+        <Tab.Screen name={tomorrowDate.toDateString()} component={Today} />
+      </Tab.Navigator>
+    );
+  }
+}
+
+class Today extends React.Component {
 
   render() {
     return (
@@ -17,3 +41,5 @@ export default class TrainingDay extends React.Component {
   }
 
 }
+
+

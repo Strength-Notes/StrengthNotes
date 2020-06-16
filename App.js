@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator headerMode='none'>
         <Stack.Screen name="TrainingView" component={TrainingView} />
       </Stack.Navigator>
     </NavigationContainer>

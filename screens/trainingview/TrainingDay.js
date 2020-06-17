@@ -7,10 +7,10 @@ const Tab = createMaterialTopTabNavigator()
 export default class TrainingDay extends React.Component {
 
   render() {
-    let todayDate = this.props.route.params.range.startDate
-    let tomorrowDate = new Date()
+    let todayDate = this.props.route.params.startDate
+    let tomorrowDate = new Date(todayDate)
     tomorrowDate.setDate(todayDate.getDate() + 1)
-    let yesterdayDate = new Date()
+    let yesterdayDate = new Date(todayDate)
     yesterdayDate.setDate(todayDate.getDate() - 1)
 
     return (

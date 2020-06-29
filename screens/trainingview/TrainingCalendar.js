@@ -1,22 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import { Calendar } from 'react-native-calendario';
 
-export default class TrainingCalendar extends React.Component {
+const TrainingCalendar = ({ navigation }) => (
+  <View>
+    <Calendar
+      onChange={(range) => navigation.navigate(
+        'TrainingDay',
+        { startDate: range.startDate },
+      )}
+      disableRange
+    />
+  </View>
+);
 
-  render() {
-    return (
-      <View>
-        <Calendar
-          onChange={range =>
-            this.props.navigation.navigate(
-              'TrainingDay',
-              { startDate: range.startDate }
-          )}
-          disableRange
-        />
-      </View>
-     );
-  }
+TrainingCalendar.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
-}
+export default TrainingCalendar;

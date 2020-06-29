@@ -39,7 +39,7 @@ const TrainingDay = ({ route }) => {
 TrainingDay.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      startDate: PropTypes.instaceOf(Date).isRequired,
+      startDate: PropTypes.instanceOf(Date).isRequired,
     }).isRequired,
   }).isRequired,
 };

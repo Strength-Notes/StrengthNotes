@@ -22,23 +22,79 @@ const exercisesToday = {
   },
 };
 
+class ExerciseCard extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.name = props.name;
+    this.navigation = props.navigation;
+
+    this.state = {
+      isSelected: false,
+    };
+  }
+
+  handlePress() {
+    const { isSelected } = this.state;
+    if (isSelected) {
+      this.toggleSelected();
+    } else {
+      this.navigation.navigate('ExerciseScreen');
+    }
+  }
+
+  handleLongPress() {
+    this.toggleSelected();
+  }
+
+  toggleSelected() {
+    const { isSelected } = this.state;
+
+    this.setState({
+      isSelected: !isSelected,
+    });
+  }
+
+  render() {
+    const { isSelected } = this.state;
+
+    return (
+      <TouchableOpacity
+        onPress={() => (this.handlePress())}
+        onLongPress={() => (this.handleLongPress())}
+      >
+        <Card
+          title={this.name}
+          titleStyle={styles.exerciseNameStyle}
+          containerStyle={isSelected ? styles.cardSelected : null}
+        >
+          {
+            Object.keys(exercisesToday[this.name]).map((weight) => (
+              <Text style={styles.setsAndReps}>
+                {weight}: {exercisesToday[this.name][weight]}
+              </Text>
+            ))
+          }
+        </Card>
+      </TouchableOpacity>
+    );
+  }
+}
+
+ExerciseCard.propTypes = {
+  name: PropTypes.string.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
 function Today({ navigation }) {
   return (
     <SafeAreaView>
       <ScrollView>
         {
           Object.keys(exercisesToday).map((name) => (
-            <TouchableOpacity onPress={() => (navigation.navigate('ExerciseScreen'))}>
-              <Card title={name}>
-                {
-                  Object.keys(exercisesToday[name]).map((weight) => (
-                    <Text style={styles.setsAndReps}>
-                      {weight}: {exercisesToday[name][weight]}
-                    </Text>
-                  ))
-                }
-              </Card>
-            </TouchableOpacity>
+            <ExerciseCard name={name} navigation={navigation} />
           ))
         }
       </ScrollView>
@@ -81,8 +137,14 @@ TrainingDay.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  exerciseNameStyle: {
+    textAlign: 'left',
+  },
   setsAndReps: {
     fontSize: 16,
+  },
+  cardSelected: {
+    backgroundColor: 'lightblue',
   },
 });
 

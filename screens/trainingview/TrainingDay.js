@@ -1,105 +1,59 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
-import { Card } from 'react-native-elements';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import ExerciseCard from './ExerciseCard';
 
-const exercisesToday = {
-  Squats: {
-    315: 5,
-    405: 3,
-    495: 1,
+const exercisesToday = [
+  {
+    key: 'squats-1',
+    name: 'Squats',
+    sets: {
+      315: 5,
+      405: 3,
+      495: 1,
+    },
   },
-  Bench: {
-    225: 5,
-    315: 2,
+  {
+    key: 'bench-1',
+    name: 'Bench',
+    sets: {
+      225: 5,
+      315: 2,
+    },
   },
-};
+];
 
-class ExerciseCard extends React.Component {
+class Today extends React.Component {
   constructor(props) {
     super(props);
 
-    this.name = props.name;
     this.navigation = props.navigation;
 
     this.state = {
-      isSelected: false,
+      data: exercisesToday,
     };
   }
 
-  handlePress() {
-    const { isSelected } = this.state;
-    if (isSelected) {
-      this.toggleSelected();
-    } else {
-      this.navigation.navigate('ExerciseScreen');
-    }
-  }
-
-  handleLongPress() {
-    this.toggleSelected();
-  }
-
-  toggleSelected() {
-    const { isSelected } = this.state;
-
-    this.setState({
-      isSelected: !isSelected,
-    });
-  }
-
   render() {
-    const { isSelected } = this.state;
-
     return (
-      <TouchableOpacity
-        onPress={() => (this.handlePress())}
-        onLongPress={() => (this.handleLongPress())}
-      >
-        <Card
-          title={this.name}
-          titleStyle={styles.exerciseNameStyle}
-          containerStyle={isSelected ? styles.cardSelected : null}
-        >
-          {
-            Object.keys(exercisesToday[this.name]).map((weight) => (
-              <Text style={styles.setsAndReps}>
-                {weight}: {exercisesToday[this.name][weight]}
-              </Text>
-            ))
-          }
-        </Card>
-      </TouchableOpacity>
+      <DraggableFlatList
+        data={this.state.data} // eslint-disable-line
+        renderItem={
+          ({ item, drag }) => (
+            <ExerciseCard
+              name={item.name}
+              sets={item.sets}
+              drag={drag}
+              navigation={this.navigation}
+            />
+          )
+        }
+        keyExtractor={(item) => `draggable-item-${item.key}`}
+        onDragEnd={({ data }) => { this.setState({ data }); }}
+      />
     );
   }
-}
-
-ExerciseCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-};
-
-function Today({ navigation }) {
-  return (
-    <SafeAreaView>
-      <ScrollView>
-        {
-          Object.keys(exercisesToday).map((name) => (
-            <ExerciseCard name={name} navigation={navigation} />
-          ))
-        }
-      </ScrollView>
-    </SafeAreaView>
-  );
 }
 
 Today.propTypes = {
@@ -135,17 +89,5 @@ TrainingDay.propTypes = {
     }).isRequired,
   }).isRequired,
 };
-
-const styles = StyleSheet.create({
-  exerciseNameStyle: {
-    textAlign: 'left',
-  },
-  setsAndReps: {
-    fontSize: 16,
-  },
-  cardSelected: {
-    backgroundColor: 'lightblue',
-  },
-});
 
 export default TrainingDay;

@@ -6,10 +6,12 @@ import { Calendar } from 'react-native-calendario';
 const TrainingCalendar = ({ navigation }) => (
   <View>
     <Calendar
-      onChange={(range) => navigation.navigate(
-        'TrainingDay',
-        { startDate: range.startDate },
-      )}
+      onChange={(range) => {
+        navigation.navigate(
+          'TrainingDay',
+          { date: range.startDate },
+        );
+      }}
       disableRange
     />
   </View>

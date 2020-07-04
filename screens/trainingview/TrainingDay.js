@@ -1,93 +1,95 @@
 import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import { connect } from 'react-redux';
 import ExerciseCard from './ExerciseCard';
+import {
+  getSetsAtDate,
+  getExercises,
+  getSetsOfExercise,
+  getFormattedDateString,
+} from '../../redux/organizers';
 
-const exercisesToday = [
-  {
-    key: 'squats-1',
-    name: 'Squats',
-    sets: {
-      315: 5,
-      405: 3,
-      495: 1,
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
   },
-  {
-    key: 'bench-1',
-    name: 'Bench',
-    sets: {
-      225: 5,
-      315: 2,
-    },
+  header: {
+    fontWeight: 'bold',
+    alignContent: 'center',
+    fontSize: 16,
   },
-];
+});
 
-class Today extends React.Component {
+class TrainingDay extends React.Component {
   constructor(props) {
     super(props);
 
     this.navigation = props.navigation;
 
     this.state = {
-      data: exercisesToday,
+      date: props.route.params.date,
+      exerciseSets: props.exerciseSets,
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
+    const { date } = nextProps.route.params;
+    const { exerciseSets } = nextProps;
+
+    this.setState({
+      date,
+      exerciseSets,
+    });
+  }
+
   render() {
+    const { date, exerciseSets } = this.state;
+    let { exerciseNamesToday } = this.state;
+    const formattedDate = getFormattedDateString(date);
+    const setsToday = getSetsAtDate(exerciseSets, formattedDate);
+    if (!exerciseNamesToday) {
+      exerciseNamesToday = getExercises(setsToday);
+    }
+
     return (
-      <DraggableFlatList
-        data={this.state.data} // eslint-disable-line
-        renderItem={
-          ({ item, drag }) => (
-            <ExerciseCard
-              name={item.name}
-              sets={item.sets}
-              drag={drag}
-              navigation={this.navigation}
-            />
-          )
-        }
-        keyExtractor={(item) => `draggable-item-${item.key}`}
-        onDragEnd={({ data }) => { this.setState({ data }); }}
-      />
+      <View style={styles.container}>
+        <Text>{date.toDateString()}</Text>
+        <DraggableFlatList
+          data={exerciseNamesToday}
+          renderItem={
+            ({ item, drag }) => (
+              <ExerciseCard
+                name={item}
+                sets={getSetsOfExercise(setsToday, item)}
+                drag={drag}
+                navigation={this.navigation}
+              />
+            )
+          }
+          keyExtractor={(item) => `draggable-item-${item}`}
+          onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
+        />
+      </View>
     );
   }
 }
 
-Today.propTypes = {
+TrainingDay.propTypes = {
+  exerciseSets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      date: PropTypes.instanceOf(Date).isRequired,
+    }).isRequired,
+  }).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-const Tab = createMaterialTopTabNavigator();
+const mapStateToProps = (state) => ({
+  exerciseSets: state,
+});
 
-const TrainingDay = ({ route }) => {
-  const todayDate = route.params.startDate;
-  const tomorrowDate = new Date(todayDate);
-  tomorrowDate.setDate(todayDate.getDate() + 1);
-  const yesterdayDate = new Date(todayDate);
-  yesterdayDate.setDate(todayDate.getDate() - 1);
-
-  return (
-    <Tab.Navigator
-      initialRouteName={todayDate.toDateString()}
-    >
-      <Tab.Screen name={yesterdayDate.toDateString()} component={Today} />
-      <Tab.Screen name={todayDate.toDateString()} component={Today} />
-      <Tab.Screen name={tomorrowDate.toDateString()} component={Today} />
-    </Tab.Navigator>
-  );
-};
-
-TrainingDay.propTypes = {
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      startDate: PropTypes.instanceOf(Date).isRequired,
-    }).isRequired,
-  }).isRequired,
-};
-
-export default TrainingDay;
+export default connect(mapStateToProps)(TrainingDay);

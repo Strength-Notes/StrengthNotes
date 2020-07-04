@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import { shapeOfSetObject } from '../../redux/store';
 
 const styles = StyleSheet.create({
   exerciseNameStyle: {
@@ -68,9 +69,9 @@ class ExerciseCard extends React.Component {
           containerStyle={isSelected ? styles.cardSelected : null}
         >
           {
-            Object.keys(this.sets).map((weight) => (
+            this.sets.map((setObj) => (
               <Text style={styles.setsAndReps}>
-                {weight}: {this.sets[weight]}
+                {setObj.weight}: {setObj.reps}
               </Text>
             ))
           }
@@ -82,7 +83,7 @@ class ExerciseCard extends React.Component {
 
 ExerciseCard.propTypes = {
   name: PropTypes.string.isRequired,
-  sets: PropTypes.object.isRequired, // eslint-disable-line 
+  sets: PropTypes.arrayOf(shapeOfSetObject).isRequired,
   drag: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,

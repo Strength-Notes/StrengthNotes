@@ -1,14 +1,37 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+} from 'react-native';
 import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { shapeOfSetObject } from '../../redux/store';
 
 const styles = StyleSheet.create({
-  exerciseNameStyle: {
+  exerciseName: {
     textAlign: 'left',
   },
-  setsAndReps: {
+  setRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  weightNum: {
+    fontSize: 16,
+  },
+  weightUnit: {
+    fontSize: 12,
+  },
+  repsNum: {
+    marginLeft: 40,
+    fontSize: 16,
+  },
+  repsLabel: {
+    fontSize: 12,
+  },
+  rpe: {
+    marginLeft: 48,
     fontSize: 16,
   },
   cardSelected: {
@@ -30,7 +53,7 @@ class ExerciseCard extends React.Component {
     };
   }
 
-  handlePress() {
+  handlePress() { // eslint-disable-line
     const { isSelected } = this.state;
     if (isSelected) {
       this.toggleSelected();
@@ -55,6 +78,23 @@ class ExerciseCard extends React.Component {
     });
   }
 
+  getSetRow = (setObj) => (
+    <View style={styles.setRow}>
+      <Text style={styles.weightNum}>{setObj.weight}</Text>
+      <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
+
+      <Text style={styles.repsNum}>{setObj.reps}</Text>
+      <Text style={styles.repsLabel}> reps</Text>
+      { // Only render RPE if the field exists
+        setObj.rpe && (
+          <Text style={styles.rpe}>
+            RPE {setObj.rpe}
+          </Text>
+        )
+      }
+    </View>
+  );
+
   render() {
     const { isSelected } = this.state;
 
@@ -65,14 +105,13 @@ class ExerciseCard extends React.Component {
       >
         <Card
           title={this.name}
-          titleStyle={styles.exerciseNameStyle}
+          titleStyle={styles.exerciseName}
           containerStyle={isSelected ? styles.cardSelected : null}
         >
           {
+            // Render each set under it's respective exercise name
             this.sets.map((setObj) => (
-              <Text style={styles.setsAndReps}>
-                {setObj.weight}: {setObj.reps}
-              </Text>
+              this.getSetRow(setObj)
             ))
           }
         </Card>

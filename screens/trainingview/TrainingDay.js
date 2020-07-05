@@ -15,10 +15,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  dateHeaderContainer: {
+    backgroundColor: 'lightgray',
+  },
+  dateHeader: {
     fontWeight: 'bold',
-    alignContent: 'center',
+    alignSelf: 'center',
     fontSize: 16,
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
 
@@ -55,7 +60,9 @@ class TrainingDay extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>{date.toDateString()}</Text>
+        <View style={styles.dateHeaderContainer}>
+          <Text style={styles.dateHeader}>{date.toDateString()}</Text>
+        </View>
         <DraggableFlatList
           data={exerciseNamesToday}
           renderItem={

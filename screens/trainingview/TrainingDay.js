@@ -72,6 +72,7 @@ class TrainingDay extends React.Component {
                 sets={getSetsOfExercise(setsToday, item)}
                 drag={drag}
                 navigation={this.navigation}
+                date={date}
               />
             )
           }

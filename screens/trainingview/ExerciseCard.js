@@ -43,10 +43,11 @@ class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.name = props.name;
-    this.sets = props.sets;
-    this.drag = props.drag;
+    this.name = props.name; // Exercise name
+    this.sets = props.sets; // Sets of exercise
+    this.drag = props.drag; // Drag function (for draggable list)
     this.navigation = props.navigation;
+    this.date = props.date; // Needed for navigation to ExerciseScreen
 
     this.state = {
       isSelected: false,
@@ -58,7 +59,13 @@ class ExerciseCard extends React.Component {
     if (isSelected) {
       this.toggleSelected();
     } else {
-      this.navigation.navigate('ExerciseScreen');
+      this.navigation.navigate(
+        'ExerciseScreen',
+        {
+          date: this.date,
+          exercise: this.name,
+        },
+      );
     }
   }
 
@@ -127,6 +134,7 @@ ExerciseCard.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default ExerciseCard;

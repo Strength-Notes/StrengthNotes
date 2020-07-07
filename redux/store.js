@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 const ADD_SET = 'ADD_SET';
 const REMOVE_SET = 'REMOVE_SET';
 
-export const addSet = (update) => ({
+export const addSetAction = (update) => ({
   type: ADD_SET,
   payload: update,
 });
 
-export const removeSet = (update) => ({
+export const removeSetAction = (update) => ({
   type: REMOVE_SET,
   payload: update,
 });
@@ -86,10 +86,10 @@ const exampleSetBench2 = {
   comment: null,
 };
 
-store.dispatch(addSet(exampleSetSquat));
-store.dispatch(addSet(exampleSetSquat2));
-store.dispatch(addSet(exampleSetBench));
-store.dispatch(addSet(exampleSetBench2));
+store.dispatch(addSetAction(exampleSetSquat));
+store.dispatch(addSetAction(exampleSetSquat2));
+store.dispatch(addSetAction(exampleSetBench));
+store.dispatch(addSetAction(exampleSetBench2));
 
 export const shapeOfSetObject = PropTypes.shape({
   key: PropTypes.string.isRequired,

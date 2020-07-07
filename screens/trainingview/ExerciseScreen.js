@@ -123,30 +123,50 @@ class ExerciseScreen extends React.Component {
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
+    const { date } = nextProps.route.params;
+    const { allSets } = nextProps;
+
+    const { exercise } = this.state;
+
+    const dateString = getFormattedDateString(date);
+    const allSetsAtDate = getSetsAtDate(allSets, dateString);
+    const sets = getSetsOfExercise(allSetsAtDate, exercise);
+
+    this.setState({
+      dateString,
+      allSets,
+      sets,
+    });
+  }
+
   addSetHandler = () => {
-    const { weightInput, repsInput, rpeInput } = this.state;
+    let { weightInput, repsInput, rpeInput } = this.state;
 
     if (weightInput === '' || repsInput === '') {
       return; // Error: weight and reps cannot be blank
     }
 
+    weightInput = Number(weightInput);
+    repsInput = Number(repsInput);
+    rpeInput = Number(rpeInput);
+
     this.addSetDispatch(this.state, weightInput, repsInput, rpeInput);
-    console.log('added ' + weightInput + ' ' + repsInput);
   }
 
   getSetRow = ({ setObj }) => (
     <View style={styles.setRow}>
-      <Text style={styles.weightNum}>{setObj.weight}</Text>
-      <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
+      <Text style={styles.weightNum}>{setObj.weight} </Text>
+      <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
 
-      <Text style={styles.repsNum}>{setObj.reps}</Text>
-      <Text style={styles.repsLabel}> reps</Text>
+      <Text style={styles.repsNum}>{setObj.reps} </Text>
+      <Text style={styles.repsLabel}>reps</Text>
       { // Only render RPE if the field exists
-        setObj.rpe && (
+        setObj.rpe ? (
           <Text style={styles.rpe}>
             RPE {setObj.rpe}
           </Text>
-        )
+        ) : []
       }
     </View>
   );
@@ -225,7 +245,7 @@ ExerciseScreen.propTypes = {
       exercise: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  addSet: PropTypes.func.isRequired,
+  addSetDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

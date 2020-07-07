@@ -35,25 +35,25 @@ class TrainingDay extends React.Component {
 
     this.state = {
       date: props.route.params.date,
-      exerciseSets: props.exerciseSets,
+      allSets: props.allSets,
     };
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
     const { date } = nextProps.route.params;
-    const { exerciseSets } = nextProps;
+    const { allSets } = nextProps;
 
     this.setState({
       date,
-      exerciseSets,
+      allSets,
     });
   }
 
   render() {
-    const { date, exerciseSets } = this.state;
+    const { date, allSets } = this.state;
     let { exerciseNamesToday } = this.state;
     const formattedDate = getFormattedDateString(date);
-    const setsToday = getSetsAtDate(exerciseSets, formattedDate);
+    const setsToday = getSetsAtDate(allSets, formattedDate);
     if (!exerciseNamesToday) {
       exerciseNamesToday = getExercises(setsToday);
     }
@@ -85,7 +85,7 @@ class TrainingDay extends React.Component {
 }
 
 TrainingDay.propTypes = {
-  exerciseSets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  allSets: PropTypes.arrayOf(PropTypes.object).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
       date: PropTypes.instanceOf(Date).isRequired,
@@ -97,7 +97,7 @@ TrainingDay.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  exerciseSets: state,
+  allSets: state,
 });
 
 export default connect(mapStateToProps)(TrainingDay);

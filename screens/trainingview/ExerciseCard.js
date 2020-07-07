@@ -44,14 +44,20 @@ class ExerciseCard extends React.Component {
     super(props);
 
     this.name = props.name; // Exercise name
-    this.sets = props.sets; // Sets of exercise
     this.drag = props.drag; // Drag function (for draggable list)
     this.navigation = props.navigation;
     this.date = props.date; // Needed for navigation to ExerciseScreen
 
     this.state = {
+      sets: props.sets,
       isSelected: false,
     };
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
+    this.setState({
+      sets: nextProps.sets,
+    });
   }
 
   handlePress() { // eslint-disable-line
@@ -93,11 +99,11 @@ class ExerciseCard extends React.Component {
       <Text style={styles.repsNum}>{setObj.reps}</Text>
       <Text style={styles.repsLabel}> reps</Text>
       { // Only render RPE if the field exists
-        setObj.rpe && (
+        setObj.rpe ? (
           <Text style={styles.rpe}>
             RPE {setObj.rpe}
           </Text>
-        )
+        ) : []
       }
     </View>
   );
@@ -117,7 +123,7 @@ class ExerciseCard extends React.Component {
         >
           {
             // Render each set under it's respective exercise name
-            this.sets.map((setObj) => (
+            this.state.sets.map((setObj) => (
               this.getSetRow(setObj)
             ))
           }

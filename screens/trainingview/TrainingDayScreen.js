@@ -89,7 +89,15 @@ class TrainingDayScreen extends React.Component {
           keyExtractor={(item) => `draggable-item-${item}`}
           onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
         />
-        <TouchableOpacity style={styles.addExerciseButton}>
+        <TouchableOpacity
+          style={styles.addExerciseButton}
+          onPress={() => {
+            this.navigation.navigate(
+              'AddExerciseScreen',
+              { date },
+            );
+          }}
+        >
           <Icon name="plus" size={64} color="#999" />
         </TouchableOpacity>
       </View>

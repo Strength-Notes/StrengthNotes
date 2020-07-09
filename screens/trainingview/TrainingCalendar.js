@@ -8,7 +8,7 @@ const TrainingCalendar = ({ navigation }) => (
     <Calendar
       onChange={(range) => {
         navigation.navigate(
-          'TrainingDay',
+          'TrainingDayScreen',
           { date: range.startDate },
         );
       }}

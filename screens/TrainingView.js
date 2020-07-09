@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import TrainingCalendar from './trainingview/TrainingCalendar';
-import TrainingDay from './trainingview/TrainingDay';
+import TrainingDayScreen from './trainingview/TrainingDayScreen';
 import ExerciseScreen from './trainingview/ExerciseScreen';
 
 const TrainingStack = createStackNavigator();
@@ -13,7 +13,7 @@ const TrainingView = () => (
     }}
   >
     <TrainingStack.Screen name="TrainingCalendar" component={TrainingCalendar} />
-    <TrainingStack.Screen name="TrainingDay" component={TrainingDay} />
+    <TrainingStack.Screen name="TrainingDayScreen" component={TrainingDayScreen} />
     <TrainingStack.Screen name="ExerciseScreen" component={ExerciseScreen} />
   </TrainingStack.Navigator>
 );

@@ -109,7 +109,7 @@ class ExerciseCard extends React.Component {
   );
 
   render() {
-    const { isSelected } = this.state;
+    const { isSelected, sets } = this.state;
 
     return (
       <TouchableOpacity
@@ -123,7 +123,7 @@ class ExerciseCard extends React.Component {
         >
           {
             // Render each set under it's respective exercise name
-            this.state.sets.map((setObj) => (
+            sets.map((setObj) => (
               this.getSetRow(setObj)
             ))
           }

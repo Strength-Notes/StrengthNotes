@@ -1,7 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import Icon from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import ExerciseCard from './ExerciseCard';
 import {
@@ -25,9 +31,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
+  addExerciseButton: {
+    alignSelf: 'center',
+    margin: 16,
+  },
 });
 
-class TrainingDay extends React.Component {
+class TrainingDayScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -79,12 +89,15 @@ class TrainingDay extends React.Component {
           keyExtractor={(item) => `draggable-item-${item}`}
           onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
         />
+        <TouchableOpacity style={styles.addExerciseButton}>
+          <Icon name="plus" size={64} color="#999" />
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-TrainingDay.propTypes = {
+TrainingDayScreen.propTypes = {
   allSets: PropTypes.arrayOf(PropTypes.object).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
@@ -100,4 +113,4 @@ const mapStateToProps = (state) => ({
   allSets: state,
 });
 
-export default connect(mapStateToProps)(TrainingDay);
+export default connect(mapStateToProps)(TrainingDayScreen);

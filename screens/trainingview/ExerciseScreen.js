@@ -2,20 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   StyleSheet,
+  Animated,
   TouchableOpacity,
   TextInput,
   Text,
   View,
   SafeAreaView,
 } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { RectButton } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import Icon from 'react-native-vector-icons/Feather';
 import {
   getSetsAtDate,
   getSetsOfExercise,
   getFormattedDateString,
 } from '../../redux/organizers';
 import { shapeOfSetObject, addSetAction, removeSetAction } from '../../redux/store';
+
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
 const styles = StyleSheet.create({
   container: {
@@ -100,6 +106,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
     borderRadius: 5,
   },
+  trashActionButton: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+    marginBottom: 4,
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  trashIcon: {
+    marginTop: 4,
+  },
 });
 
 class ExerciseScreen extends React.Component {
@@ -108,6 +126,7 @@ class ExerciseScreen extends React.Component {
 
     this.navigation = props.navigation;
     this.addSetDispatch = props.addSetDispatch;
+    this.removeSetDispatch = props.removeSetDispatch;
 
     const { allSets } = props;
     const { date, exercise } = props.route.params;
@@ -154,21 +173,50 @@ class ExerciseScreen extends React.Component {
     this.addSetDispatch(this.state, weightInput, repsInput, rpeInput);
   }
 
-  getSetRow = ({ setObj }) => (
-    <View style={styles.setRow}>
-      <Text style={styles.weightNum}>{setObj.weight} </Text>
-      <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+  getRightActions = (setObj) => (dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [-10, 0],
+      outputRange: [50, 0],
+      extrapolate: 'clamp',
+    });
+    return (
+      <RectButton
+        style={styles.trashActionButton}
+        onPress={() => this.removeSetDispatch(setObj)}
+      >
+        <AnimatedIcon
+          style={[
+            styles.trashIcon,
+            {
+              transform: [{ translateX: trans }],
+            },
+          ]}
+          name="trash-2"
+          size={32}
+        />
+      </RectButton>
+    );
+  };
 
-      <Text style={styles.repsNum}>{setObj.reps} </Text>
-      <Text style={styles.repsLabel}>reps</Text>
-      { // Only render RPE if the field exists
-        setObj.rpe ? (
-          <Text style={styles.rpe}>
-            RPE {setObj.rpe}
-          </Text>
-        ) : []
-      }
-    </View>
+  getSetRow = ({ setObj }) => (
+    <Swipeable
+      renderRightActions={this.getRightActions(setObj)}
+    >
+      <View style={styles.setRow}>
+        <Text style={styles.weightNum}>{setObj.weight} </Text>
+        <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+
+        <Text style={styles.repsNum}>{setObj.reps} </Text>
+        <Text style={styles.repsLabel}>reps</Text>
+        { // Only render RPE if the field exists
+          setObj.rpe ? (
+            <Text style={styles.rpe}>
+              RPE {setObj.rpe}
+            </Text>
+          ) : []
+        }
+      </View>
+    </Swipeable>
   );
 
   getFooter = () => (
@@ -246,6 +294,7 @@ ExerciseScreen.propTypes = {
     }).isRequired,
   }).isRequired,
   addSetDispatch: PropTypes.func.isRequired,
+  removeSetDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,

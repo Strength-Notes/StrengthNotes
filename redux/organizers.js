@@ -8,15 +8,7 @@
  * @param {String} dateString - The date string (in YYYY-MM-DD format) to filter for
  */
 export function getSetsAtDate(exerciseSets, dateString) {
-  const setsAtDate = [];
-
-  exerciseSets.forEach((set) => {
-    if (set.date === dateString) {
-      setsAtDate.push(set);
-    }
-  });
-
-  return setsAtDate;
+  return exerciseSets[0][dateString];
 }
 
 /*

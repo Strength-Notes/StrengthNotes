@@ -19,7 +19,7 @@ import {
   getSetsOfExercise,
   getFormattedDateString,
 } from '../../redux/organizers';
-import { shapeOfSetObject, addSetAction, removeSetAction } from '../../redux/store';
+import { addSetAction, removeSetAction } from '../../redux/store';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
@@ -298,7 +298,7 @@ ExerciseScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  sets: PropTypes.arrayOf(shapeOfSetObject).isRequired,
+  sets: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -23,22 +23,29 @@ export const reorderSetsForExerciseAction = (exerciseName, sets) => ({
   },
 });
 
-function setReducer(state = [], action) {
-  let newState = [...state];
+function setReducer(state = [{}], action) {
+  const newState = [...state];
 
   switch (action.type) {
     case ADD_SET: {
-      newState = [...newState, action.payload];
+      const { date } = action.payload;
+      if (newState[0][date] === undefined) {
+        newState[0][date] = [action.payload];
+      } else {
+        newState[0][date] = [...newState[0][date], action.payload];
+      }
       return newState;
     }
     case REMOVE_SET: {
-      newState = newState.filter(
+      const { date } = action.payload;
+
+      newState[0][date] = newState[0][date].filter(
         (element) => (element.key !== action.payload.key),
       );
       return newState;
     }
     case REORDER_FOR_EXERCISE: {
-      // TODO
+      // TODOi
       return newState;
     }
     default:

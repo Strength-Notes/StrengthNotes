@@ -1,8 +1,9 @@
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import PropTypes from 'prop-types';
 
 const ADD_SET = 'ADD_SET';
 const REMOVE_SET = 'REMOVE_SET';
+const REORDER_FOR_EXERCISE = 'REORDER_FOR_EXERCISE';
 
 export const addSetAction = (update) => ({
   type: ADD_SET,
@@ -14,17 +15,39 @@ export const removeSetAction = (update) => ({
   payload: update,
 });
 
+export const reorderSetsForExerciseAction = (exerciseName, sets) => ({
+  type: REORDER_FOR_EXERCISE,
+  payload: {
+    exerciseName,
+    sets,
+  },
+});
+
 function setReducer(state = [], action) {
-  if (action.type === ADD_SET) {
-    return [...state, action.payload];
+  let newState = [...state];
+
+  switch (action.type) {
+    case ADD_SET: {
+      newState = [...newState, action.payload];
+      return newState;
+    }
+    case REMOVE_SET: {
+      newState = newState.filter(
+        (element) => (element.key !== action.payload.key),
+      );
+      return newState;
+    }
+    case REORDER_FOR_EXERCISE: {
+      // TODO
+      return newState;
+    }
+    default:
+      return newState;
   }
-  if (action.type === REMOVE_SET) {
-    return state.filter((element) => (element.key !== action.payload.key));
-  }
-  return state;
 }
 
-const store = createStore(setReducer);
+const rootReducer = combineReducers({ sets: setReducer });
+const store = createStore(rootReducer);
 
 const exampleSetSquat = {
   key: '2020-07-02-squats-1',

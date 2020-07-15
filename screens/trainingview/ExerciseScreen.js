@@ -128,34 +128,34 @@ class ExerciseScreen extends React.Component {
     this.addSetDispatch = props.addSetDispatch;
     this.removeSetDispatch = props.removeSetDispatch;
 
-    const { allSets } = props;
+    const { sets } = props;
     const { date, exercise } = props.route.params;
 
     const dateString = getFormattedDateString(date);
-    const allSetsAtDate = getSetsAtDate(allSets, dateString);
-    const sets = getSetsOfExercise(allSetsAtDate, exercise);
+    const allSetsAtDate = getSetsAtDate(sets, dateString);
+    const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
 
     this.state = {
       dateString,
       exercise,
-      sets,
+      setsOfExercise,
     };
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
     const { date } = nextProps.route.params;
-    const { allSets } = nextProps;
+    const { sets } = nextProps;
 
     const { exercise } = this.state;
 
     const dateString = getFormattedDateString(date);
-    const allSetsAtDate = getSetsAtDate(allSets, dateString);
-    const sets = getSetsOfExercise(allSetsAtDate, exercise);
+    const allSetsAtDate = getSetsAtDate(sets, dateString);
+    const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
 
     this.setState({
       dateString,
-      allSets,
       sets,
+      setsOfExercise,
     });
   }
 
@@ -256,7 +256,7 @@ class ExerciseScreen extends React.Component {
   );
 
   render() {
-    const { exercise, sets } = this.state;
+    const { exercise, setsOfExercise } = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
@@ -266,7 +266,7 @@ class ExerciseScreen extends React.Component {
 
         <DraggableFlatList
           style={styles.list}
-          data={sets}
+          data={setsOfExercise}
           renderItem={
             ({ item, drag }) => (
               <TouchableOpacity
@@ -298,11 +298,11 @@ ExerciseScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
-  allSets: PropTypes.arrayOf(shapeOfSetObject).isRequired,
+  sets: PropTypes.arrayOf(shapeOfSetObject).isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  allSets: state,
+  sets: state.sets,
 });
 
 const mapDispatchToProps = (dispatch) => ({

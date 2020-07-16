@@ -92,7 +92,10 @@ class ExerciseCard extends React.Component {
   }
 
   getSetRow = (setObj) => (
-    <View style={styles.setRow}>
+    <View
+      key={setObj.key}
+      style={styles.setRow}
+    >
       <Text style={styles.weightNum}>{setObj.weight}</Text>
       <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
 

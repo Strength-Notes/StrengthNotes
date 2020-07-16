@@ -7,6 +7,7 @@ import {
 import { createStackNavigator } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getFormattedDateString } from '../redux/organizers';
 import TrainingCalendar from './trainingview/TrainingCalendar';
 import TrainingDayScreen from './trainingview/TrainingDayScreen';
 import ExerciseScreen from './trainingview/ExerciseScreen';
@@ -48,7 +49,7 @@ const TrainingView = ({ navigation }) => (
           </View>
         ),
       }}
-      initialParams={{ date: new Date() }}
+      initialParams={{ date: getFormattedDateString(new Date()) }}
     />
     <TrainingStack.Screen
       name="TrainingCalendar"

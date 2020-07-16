@@ -17,7 +17,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import {
   getSetsAtDate,
   getSetsOfExercise,
-  getFormattedDateString,
 } from '../../redux/organizers';
 import { addSetAction, removeSetAction, moveSetAction } from '../../redux/store';
 
@@ -132,12 +131,11 @@ class ExerciseScreen extends React.Component {
     const { sets } = props;
     const { date, exercise } = props.route.params;
 
-    const dateString = getFormattedDateString(date);
-    const allSetsAtDate = getSetsAtDate(sets, dateString);
+    const allSetsAtDate = getSetsAtDate(sets, date);
     const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
 
     this.state = {
-      dateString,
+      date,
       exercise,
       setsOfExercise,
     };
@@ -149,12 +147,11 @@ class ExerciseScreen extends React.Component {
 
     const { exercise } = this.state;
 
-    const dateString = getFormattedDateString(date);
-    const allSetsAtDate = getSetsAtDate(sets, dateString);
+    const allSetsAtDate = getSetsAtDate(sets, date);
     const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
 
     this.setState({
-      dateString,
+      date,
       sets,
       setsOfExercise,
     });
@@ -294,7 +291,7 @@ class ExerciseScreen extends React.Component {
 ExerciseScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      date: PropTypes.instanceOf(Date).isRequired,
+      date: PropTypes.string.isRequired,
       exercise: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
@@ -314,8 +311,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   addSetDispatch: (state, weight, reps, rpe) => {
     dispatch(addSetAction({
-      key: `${state.dateString}-${state.exercise}-${Date.now()}`,
-      date: state.dateString,
+      key: `${state.date}-${state.exercise}-${Date.now()}`,
+      date: state.date,
       exercise: state.exercise,
       weight,
       weightUnit: 'lbs',

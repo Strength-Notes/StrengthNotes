@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Calendar } from 'react-native-calendario';
+import { getFormattedDateString } from '../../redux/organizers';
 
 const TrainingCalendar = ({ navigation }) => (
   <View>
@@ -10,7 +11,7 @@ const TrainingCalendar = ({ navigation }) => (
       onChange={(range) => {
         navigation.navigate(
           'TrainingDayScreen',
-          { date: range.startDate },
+          { date: getFormattedDateString(range.startDate) },
         );
       }}
       disableRange

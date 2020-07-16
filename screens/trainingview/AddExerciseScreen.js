@@ -80,7 +80,7 @@ class AddExerciseScreen extends React.Component {
 AddExerciseScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      date: PropTypes.instanceOf(Date).isRequired,
+      date: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   navigation: PropTypes.shape({

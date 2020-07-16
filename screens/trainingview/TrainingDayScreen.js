@@ -14,7 +14,6 @@ import {
   getSetsAtDate,
   getExercises,
   getSetsOfExercise,
-  getFormattedDateString,
 } from '../../redux/organizers';
 
 const styles = StyleSheet.create({
@@ -59,11 +58,20 @@ class TrainingDayScreen extends React.Component {
     });
   }
 
+  prettifyDateString = (dateString) => {
+    const b = dateString.split(/\D+/);
+    const date = new Date(Date.UTC(b[0], b[1] - 1, b[2]));
+    const d = date.toString().split(' ');
+
+    // Use date.getUTCDate() to avoid weird bugs around midnight
+    const prettyDate = `${d[0]} ${d[1]} ${date.getUTCDate()} ${d[3]}`;
+    return prettyDate;
+  }
+
   render() {
     const { date, sets } = this.state;
     let { exerciseNamesToday } = this.state;
-    const formattedDate = getFormattedDateString(date);
-    const setsToday = getSetsAtDate(sets, formattedDate);
+    const setsToday = getSetsAtDate(sets, date);
     if (!exerciseNamesToday) {
       exerciseNamesToday = getExercises(setsToday);
     }
@@ -71,7 +79,7 @@ class TrainingDayScreen extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.dateHeaderContainer}>
-          <Text style={styles.dateHeader}>{date.toDateString()}</Text>
+          <Text style={styles.dateHeader}>{this.prettifyDateString(date)}</Text>
         </View>
         <DraggableFlatList
           data={exerciseNamesToday}
@@ -109,7 +117,7 @@ TrainingDayScreen.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
-      date: PropTypes.instanceOf(Date).isRequired,
+      date: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   navigation: PropTypes.shape({

@@ -14,6 +14,7 @@ import {
   getSetsAtDate,
   getExercises,
   getSetsOfExercise,
+  getFormattedDateString,
 } from '../../redux/organizers';
 
 const styles = StyleSheet.create({
@@ -61,6 +62,28 @@ class TrainingDayScreen extends React.Component {
   prettifyDateString = (dateString) => {
     const b = dateString.split(/\D+/);
     const date = new Date(Date.UTC(b[0], b[1] - 1, b[2]));
+
+    const today = new Date();
+    const yesterday = new Date();
+    const tomorrow = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    switch (dateString) {
+      case getFormattedDateString(today): {
+        return 'Today';
+      }
+      case getFormattedDateString(yesterday): {
+        return 'Yesterday';
+      }
+      case getFormattedDateString(tomorrow): {
+        return 'Tomorrow';
+      }
+      default: {
+        break;
+      }
+    }
+
     const d = date.toString().split(' ');
 
     // Use date.getUTCDate() to avoid weird bugs around midnight

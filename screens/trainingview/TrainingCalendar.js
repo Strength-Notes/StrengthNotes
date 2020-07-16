@@ -6,6 +6,7 @@ import { Calendar } from 'react-native-calendario';
 const TrainingCalendar = ({ navigation }) => (
   <View>
     <Calendar
+      startDate={new Date()}
       onChange={(range) => {
         navigation.navigate(
           'TrainingDayScreen',

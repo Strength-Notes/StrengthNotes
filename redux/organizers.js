@@ -7,14 +7,21 @@
  * @param {Array} exerciseSets - Sets of various exercises to extract from
  * @param {String} dateString - The date string (in YYYY-MM-DD format) to filter for
  */
-export function getSetsAtDate(exerciseSets, dateString) {
-  return exerciseSets[0][dateString];
+export function getSetsAtDate(exerciseSets = [], dateString) {
+  let setsAtDate = exerciseSets[0][dateString];
+
+  if (setsAtDate === undefined) {
+    // There are no sets at this date. Return an empty array
+    setsAtDate = [];
+  }
+
+  return setsAtDate;
 }
 
 /*
  * @param {Array} exerciseSets - Sets of various exercises to extract exercise names from
  */
-export function getExercises(exerciseSets) {
+export function getExercises(exerciseSets = []) {
   const exercisesList = [];
 
   exerciseSets.forEach((set) => {
@@ -33,7 +40,7 @@ export function getExercises(exerciseSets) {
  * @param {Array} exerciseSets - Sets of various exercises to extract from
  * @param {String} exercise - Name of exercise to filter for
  */
-export function getSetsOfExercise(exerciseSets, exercise) {
+export function getSetsOfExercise(exerciseSets = [], exercise) {
   const setsOfExercise = [];
 
   exerciseSets.forEach((set) => {

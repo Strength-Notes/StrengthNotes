@@ -1,6 +1,7 @@
 import { combineReducers, createStore } from 'redux';
 import PropTypes from 'prop-types';
 import arrayMove from 'array-move';
+import { getFormattedDateString } from './organizers';
 
 const ADD_SET = 'ADD_SET';
 const REMOVE_SET = 'REMOVE_SET';
@@ -73,9 +74,11 @@ function setReducer(state = [{}], action) {
 const rootReducer = combineReducers({ sets: setReducer });
 const store = createStore(rootReducer);
 
+const todaysDateString = getFormattedDateString(new Date());
+
 const exampleSetSquat = {
   key: '2020-07-02-squats-1',
-  date: '2020-07-02',
+  date: todaysDateString,
   exercise: 'Squat',
   category: 'Lower',
   weight: 705,
@@ -90,7 +93,7 @@ const exampleSetSquat = {
 
 const exampleSetSquat2 = {
   key: '2020-07-02-squats-2',
-  date: '2020-07-02',
+  date: todaysDateString,
   exercise: 'Squat',
   category: 'Lower',
   weight: 705,
@@ -105,7 +108,7 @@ const exampleSetSquat2 = {
 
 const exampleSetBench = {
   key: '2020-07-02-bench-1',
-  date: '2020-07-02',
+  date: todaysDateString,
   exercise: 'Bench',
   category: 'Upper',
   weight: 435,
@@ -120,7 +123,7 @@ const exampleSetBench = {
 
 const exampleSetBench2 = {
   key: '2020-07-02-bench-2',
-  date: '2020-07-02',
+  date: todaysDateString,
   exercise: 'Bench',
   category: 'Upper',
   weight: 335,

@@ -6,13 +6,8 @@ import {
   Text,
   View,
 } from 'react-native';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-const exercisesAvailable = [
-  'Squat', 'Bench', 'Deadlift', 'Overhead Press',
-  'Power Clean', 'Clean', 'Clean and Jerk', 'Snatch',
-  'Log Press', 'Viking Press', 'Axle Deadlift', 'Axle Clean and Press',
-];
 
 const styles = StyleSheet.create({
   container: {
@@ -40,15 +35,20 @@ class AddExerciseScreen extends React.Component {
     super(props);
 
     this.navigation = props.navigation;
-    this.date = props.route.params.date;
+
+    this.state = {
+      date: props.route.params.date,
+      exercises: props.exercises,
+    };
   }
 
   render() {
+    const { date, exercises } = this.state;
     return (
       <View style={styles.container}>
         <SectionList
           sections={[
-            { data: exercisesAvailable, key: 'Exercises' },
+            { data: exercises, key: 'Exercises' },
           ]}
           renderSectionHeader={({ section }) => (
             <Text style={styles.sectionHeader}>{section.key}</Text>
@@ -59,14 +59,14 @@ class AddExerciseScreen extends React.Component {
                 this.navigation.navigate(
                   'ExerciseScreen',
                   {
-                    date: this.date,
+                    date,
                     exercise: item,
                   },
                 );
               }}
             >
               <View style={styles.exerciseName}>
-                <Text style={styles.exerciseNameText}>{item}</Text>
+                <Text style={styles.exerciseNameText}>{item.name}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -83,9 +83,14 @@ AddExerciseScreen.propTypes = {
       date: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default AddExerciseScreen;
+const mapStateToProps = (state) => ({
+  exercises: state.exercises,
+});
+
+export default connect(mapStateToProps)(AddExerciseScreen);

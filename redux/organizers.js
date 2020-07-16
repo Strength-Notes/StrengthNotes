@@ -69,3 +69,16 @@ export function getFormattedDateString(date) {
 
   return (`${year}-${month}-${day}`);
 }
+
+/*
+ * @param {String} name - The name of the exercise to find object for
+ */
+export function getExerciseObjectFromName(exercisesList, name) {
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < exercisesList.length; i++) {
+    if (exercisesList[i].name === name) {
+      return exercisesList[i];
+    }
+  }
+  return undefined;
+}

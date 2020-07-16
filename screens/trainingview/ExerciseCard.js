@@ -69,7 +69,7 @@ class ExerciseCard extends React.Component {
         'ExerciseScreen',
         {
           date: this.date,
-          exercise: this.name,
+          exerciseString: this.name,
         },
       );
     }

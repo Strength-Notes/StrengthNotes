@@ -17,8 +17,13 @@ import Icon from 'react-native-vector-icons/Feather';
 import {
   getSetsAtDate,
   getSetsOfExercise,
+  getExerciseObjectFromName,
 } from '../../redux/organizers';
-import { addSetAction, removeSetAction, moveSetAction } from '../../redux/store';
+import {
+  addSetAction,
+  removeSetAction,
+  moveSetAction,
+} from '../../redux/actions';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
@@ -128,33 +133,35 @@ class ExerciseScreen extends React.Component {
     this.removeSetDispatch = props.removeSetDispatch;
     this.moveSetDispatch = props.moveSetDispatch;
 
-    const { sets } = props;
-    const { date, exercise } = props.route.params;
+    this.state = this.setupProps(props);
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
+    this.setState(this.setupProps(nextProps));
+  }
+
+  setupProps = ({ route, sets, exercises }) => {
+    const { date } = route.params;
+    let { exercise, exerciseString } = route.params;
+
+    if (exerciseString === undefined) {
+      // exerciseString is not defined: use object
+      exerciseString = exercise.name;
+    } else {
+      // exerciseString is defined, so let's find the object ourselves
+      exercise = getExerciseObjectFromName(exercises, exerciseString);
+    }
 
     const allSetsAtDate = getSetsAtDate(sets, date);
-    const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
+    const setsOfExercise = getSetsOfExercise(allSetsAtDate, exerciseString);
 
-    this.state = {
+    // Return state object
+    return {
+      sets,
       date,
       exercise,
       setsOfExercise,
     };
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
-    const { date } = nextProps.route.params;
-    const { sets } = nextProps;
-
-    const { exercise } = this.state;
-
-    const allSetsAtDate = getSetsAtDate(sets, date);
-    const setsOfExercise = getSetsOfExercise(allSetsAtDate, exercise);
-
-    this.setState({
-      date,
-      sets,
-      setsOfExercise,
-    });
   }
 
   addSetHandler = () => {
@@ -259,7 +266,7 @@ class ExerciseScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.exerciseTitle}>{exercise}</Text>
+          <Text style={styles.exerciseTitle}>{exercise.name}</Text>
         </View>
 
         <DraggableFlatList
@@ -292,7 +299,12 @@ ExerciseScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       date: PropTypes.string.isRequired,
-      exercise: PropTypes.string.isRequired,
+      exercise: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        primary: PropTypes.string.isRequired,
+        secondary: PropTypes.string,
+      }),
+      exerciseString: PropTypes.string,
     }).isRequired,
   }).isRequired,
   addSetDispatch: PropTypes.func.isRequired,
@@ -301,11 +313,15 @@ ExerciseScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
+  exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = (state) => ({
   sets: state.sets,
+  exercises: state.exercises,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -313,7 +329,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(addSetAction({
       key: `${state.date}-${state.exercise}-${Date.now()}`,
       date: state.date,
-      exercise: state.exercise,
+      exercise: state.exercise.name,
       weight,
       weightUnit: 'lbs',
       reps,

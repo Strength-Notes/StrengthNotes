@@ -1,79 +1,18 @@
-import { combineReducers, createStore } from 'redux';
+import { createStore } from 'redux';
 import PropTypes from 'prop-types';
-import arrayMove from 'array-move';
+import {
+  addSetAction,
+  addExerciseAction,
+} from './actions';
+import rootReducer from './reducers';
 import { getFormattedDateString } from './organizers';
+import ExerciseProperties from './ExerciseProperties';
 
-const ADD_SET = 'ADD_SET';
-const REMOVE_SET = 'REMOVE_SET';
-const MOVE_SET = 'MOVE_SET';
-
-export const addSetAction = (update) => ({
-  type: ADD_SET,
-  payload: update,
-});
-
-export const removeSetAction = (update) => ({
-  type: REMOVE_SET,
-  payload: update,
-});
-
-export const moveSetAction = (set, distanceMoved) => ({
-  type: MOVE_SET,
-  payload: {
-    set,
-    distanceMoved,
-  },
-});
-
-function findSetInArrayByKey(setsArray, key) {
-  for (let i = 0; i < setsArray.length; i++) { // eslint-disable-line
-    if (setsArray[i].key === key) {
-      return i;
-    }
-  }
-  return -1; // Not found...
-}
-
-function setReducer(state = [{}], action) {
-  const newState = [...state];
-
-  switch (action.type) {
-    case ADD_SET: {
-      const { date } = action.payload;
-      if (newState[0][date] === undefined) {
-        newState[0][date] = [action.payload];
-      } else {
-        newState[0][date] = [...newState[0][date], action.payload];
-      }
-      return newState;
-    }
-    case REMOVE_SET: {
-      const { date } = action.payload;
-
-      newState[0][date] = newState[0][date].filter(
-        (element) => (element.key !== action.payload.key),
-      );
-      return newState;
-    }
-    case MOVE_SET: {
-      const { set, distanceMoved } = action.payload;
-      const { date } = set;
-
-      const currentIndex = findSetInArrayByKey(newState[0][date], set.key);
-      const newIndex = currentIndex + distanceMoved;
-
-      newState[0][date] = arrayMove(newState[0][date], currentIndex, newIndex);
-
-      return newState;
-    }
-    default:
-      return newState;
-  }
-}
-
-const rootReducer = combineReducers({ sets: setReducer });
 const store = createStore(rootReducer);
 
+/*
+ * Default/Sample Sets
+ */
 const todaysDateString = getFormattedDateString(new Date());
 
 const exampleSetSquat = {
@@ -140,6 +79,51 @@ store.dispatch(addSetAction(exampleSetSquat));
 store.dispatch(addSetAction(exampleSetSquat2));
 store.dispatch(addSetAction(exampleSetBench));
 store.dispatch(addSetAction(exampleSetBench2));
+
+/*
+ * Default/Sample Exercises
+ */
+const squatExercise = {
+  name: 'Squat',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const benchExercise = {
+  name: 'Bench',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const deadliftExercise = {
+  name: 'Deadlift',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const cleanAndJerkExercise = {
+  name: 'Clean and Jerk',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const bodyweightPullupsExercise = {
+  name: 'Bodyweight Pullups',
+  primary: ExerciseProperties.REPS,
+};
+
+const dumbbellBenchTimeExercise = {
+  name: 'Dumbbell Bench (Time)',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.TIME,
+};
+
+store.dispatch(addExerciseAction(squatExercise));
+store.dispatch(addExerciseAction(benchExercise));
+store.dispatch(addExerciseAction(deadliftExercise));
+store.dispatch(addExerciseAction(cleanAndJerkExercise));
+store.dispatch(addExerciseAction(bodyweightPullupsExercise));
+store.dispatch(addExerciseAction(dumbbellBenchTimeExercise));
 
 export const shapeOfSetObject = PropTypes.shape({
   key: PropTypes.string.isRequired,

@@ -1,9 +1,10 @@
 import { combineReducers, createStore } from 'redux';
 import PropTypes from 'prop-types';
+import arrayMove from 'array-move';
 
 const ADD_SET = 'ADD_SET';
 const REMOVE_SET = 'REMOVE_SET';
-const REORDER_FOR_EXERCISE = 'REORDER_FOR_EXERCISE';
+const MOVE_SET = 'MOVE_SET';
 
 export const addSetAction = (update) => ({
   type: ADD_SET,
@@ -15,13 +16,22 @@ export const removeSetAction = (update) => ({
   payload: update,
 });
 
-export const reorderSetsForExerciseAction = (exerciseName, sets) => ({
-  type: REORDER_FOR_EXERCISE,
+export const moveSetAction = (set, distanceMoved) => ({
+  type: MOVE_SET,
   payload: {
-    exerciseName,
-    sets,
+    set,
+    distanceMoved,
   },
 });
+
+function findSetInArrayByKey(setsArray, key) {
+  for (let i = 0; i < setsArray.length; i++) { // eslint-disable-line
+    if (setsArray[i].key === key) {
+      return i;
+    }
+  }
+  return -1; // Not found...
+}
 
 function setReducer(state = [{}], action) {
   const newState = [...state];
@@ -44,8 +54,15 @@ function setReducer(state = [{}], action) {
       );
       return newState;
     }
-    case REORDER_FOR_EXERCISE: {
-      // TODOi
+    case MOVE_SET: {
+      const { set, distanceMoved } = action.payload;
+      const { date } = set;
+
+      const currentIndex = findSetInArrayByKey(newState[0][date], set.key);
+      const newIndex = currentIndex + distanceMoved;
+
+      newState[0][date] = arrayMove(newState[0][date], currentIndex, newIndex);
+
       return newState;
     }
     default:

@@ -19,7 +19,7 @@ import {
   getSetsOfExercise,
   getFormattedDateString,
 } from '../../redux/organizers';
-import { addSetAction, removeSetAction } from '../../redux/store';
+import { addSetAction, removeSetAction, moveSetAction } from '../../redux/store';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
@@ -127,6 +127,7 @@ class ExerciseScreen extends React.Component {
     this.navigation = props.navigation;
     this.addSetDispatch = props.addSetDispatch;
     this.removeSetDispatch = props.removeSetDispatch;
+    this.moveSetDispatch = props.moveSetDispatch;
 
     const { sets } = props;
     const { date, exercise } = props.route.params;
@@ -277,7 +278,11 @@ class ExerciseScreen extends React.Component {
             )
           }
           keyExtractor={(item) => `draggable-item-${item.key}`}
-          onDragEnd={({ data }) => { this.setState({ sets: data }); }}
+          onDragEnd={({ from, to }) => {
+            const set = setsOfExercise[from];
+            const distanceMoved = to - from;
+            this.moveSetDispatch(set, distanceMoved);
+          }}
         />
 
         <this.getFooter />
@@ -295,6 +300,7 @@ ExerciseScreen.propTypes = {
   }).isRequired,
   addSetDispatch: PropTypes.func.isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
+  moveSetDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
@@ -319,6 +325,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   removeSetDispatch: (key) => {
     dispatch(removeSetAction(key));
+  },
+  moveSetDispatch: (set, distanceMoved) => {
+    dispatch(moveSetAction(set, distanceMoved));
   },
 });
 

@@ -71,6 +71,16 @@ export function getFormattedDateString(date) {
 }
 
 /*
+ * @param {String} dateString - The date string to create a date object for
+ */
+export function getDateObjectFromString(dateString) {
+  const b = dateString.split(/\D+/);
+  const date = new Date(b[0], b[1] - 1, b[2]);
+
+  return date;
+}
+
+/*
  * @param {String} name - The name of the exercise to find object for
  */
 export function getExerciseObjectFromName(exercisesList, name) {

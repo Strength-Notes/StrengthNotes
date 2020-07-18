@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
 import { getFormattedDateString } from '../redux/organizers';
 import TrainingCalendar from './trainingview/TrainingCalendar';
 import TrainingDayScreen from './trainingview/TrainingDayScreen';
@@ -14,12 +10,12 @@ import ExerciseScreen from './trainingview/ExerciseScreen';
 import AddExerciseScreen from './trainingview/AddExerciseScreen';
 
 const styles = StyleSheet.create({
-  dayHeaderRight: {
+  calendarHeaderRight: {
     flex: 1,
     flexDirection: 'row',
   },
-  dayTouchable: {
-    margin: 5,
+  calendarTouchable: {
+    margin: 10,
   },
 });
 
@@ -34,27 +30,32 @@ const TrainingView = ({ navigation }) => (
     <TrainingStack.Screen
       name="TrainingDayScreen"
       component={TrainingDayScreen}
+      initialParams={{ date: getFormattedDateString(new Date()) }}
+    />
+    <TrainingStack.Screen
+      name="TrainingCalendar"
+      component={TrainingCalendar}
       options={{
+        title: 'Calendar',
         headerRight: () => (
-          <View style={styles.dayHeaderRight}>
+          <View style={styles.calendarHeaderRight}>
             <TouchableOpacity
-              style={styles.dayTouchable}
-              onPress={() => { navigation.navigate('TrainingCalendar'); }}
+              style={styles.calendarTouchable}
+              onPress={() => {
+                navigation.navigate(
+                  'TrainingCalendar',
+                  { selectedDate: getFormattedDateString(new Date()) },
+                );
+              }}
             >
               <Icon
-                name="calendar-month-outline"
+                name="calendar-today"
                 size={40}
               />
             </TouchableOpacity>
           </View>
         ),
       }}
-      initialParams={{ date: getFormattedDateString(new Date()) }}
-    />
-    <TrainingStack.Screen
-      name="TrainingCalendar"
-      component={TrainingCalendar}
-      options={{ title: 'Calendar' }}
     />
     <TrainingStack.Screen name="ExerciseScreen" component={ExerciseScreen} />
     <TrainingStack.Screen name="AddExerciseScreen" component={AddExerciseScreen} />

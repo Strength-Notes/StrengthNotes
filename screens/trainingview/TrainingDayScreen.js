@@ -8,6 +8,8 @@ import {
 import PropTypes from 'prop-types';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import Icon from 'react-native-vector-icons/AntDesign';
+// eslint-disable-next-line import/no-named-default
+import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import ExerciseCard from './ExerciseCard';
 import {
@@ -15,9 +17,17 @@ import {
   getExercises,
   getSetsOfExercise,
   getFormattedDateString,
+  getDateObjectFromString,
 } from '../../redux/organizers';
 
 const styles = StyleSheet.create({
+  headerBarRightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  headerBarTouchable: {
+    margin: 10,
+  },
   container: {
     flex: 1,
   },
@@ -47,6 +57,28 @@ class TrainingDayScreen extends React.Component {
       date: props.route.params.date,
       sets: props.sets,
     };
+
+    this.navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.headerBarRightContainer}>
+          <TouchableOpacity
+            style={styles.headerBarTouchable}
+            onPress={() => {
+              this.navigation.navigate(
+                'TrainingCalendar',
+                // eslint-disable-next-line react/destructuring-assignment
+                { selectedDate: this.state.date },
+              );
+            }}
+          >
+            <MaterialIcon
+              name="calendar-month-outline"
+              size={40}
+            />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
@@ -60,8 +92,7 @@ class TrainingDayScreen extends React.Component {
   }
 
   prettifyDateString = (dateString) => {
-    const b = dateString.split(/\D+/);
-    const date = new Date(Date.UTC(b[0], b[1] - 1, b[2]));
+    const date = getDateObjectFromString(dateString);
 
     const today = new Date();
     const yesterday = new Date();

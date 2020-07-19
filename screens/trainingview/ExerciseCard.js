@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 8,
   },
+  alignedColumnsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   weightNum: {
     fontSize: 16,
   },
@@ -24,15 +29,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   repsNum: {
-    marginLeft: 40,
     fontSize: 16,
   },
   repsLabel: {
     fontSize: 12,
+    textAlign: 'right',
   },
   rpe: {
     marginLeft: 48,
     fontSize: 16,
+    flex: 1,
   },
   cardSelected: {
     backgroundColor: 'lightblue',
@@ -96,18 +102,23 @@ class ExerciseCard extends React.Component {
       key={setObj.key}
       style={styles.setRow}
     >
-      <Text style={styles.weightNum}>{setObj.weight}</Text>
-      <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
+      <View style={styles.alignedColumnsContainer}>
+        <Text style={styles.weightNum}>{setObj.weight}</Text>
+        <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
+      </View>
 
-      <Text style={styles.repsNum}>{setObj.reps}</Text>
-      <Text style={styles.repsLabel}> reps</Text>
-      { // Only render RPE if the field exists
-        setObj.rpe ? (
-          <Text style={styles.rpe}>
-            RPE {setObj.rpe}
-          </Text>
-        ) : []
-      }
+      <View style={styles.alignedColumnsContainer}>
+        <Text style={styles.repsNum}>{setObj.reps}</Text>
+        <Text style={styles.repsLabel}> reps</Text>
+      </View>
+
+      <Text style={styles.rpe}>
+        { // Only render RPE if the field exists
+          setObj.rpe ? (
+            `RPE ${setObj.rpe}`
+          ) : []
+        }
+      </Text>
     </View>
   );
 

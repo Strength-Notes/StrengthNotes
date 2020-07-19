@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   list: {
-    marginLeft: 24,
-    marginRight: 24,
+    marginLeft: 8,
+    marginRight: 8,
   },
   setRow: {
     flexDirection: 'row',
@@ -50,9 +50,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 3,
   },
+  alignedColumnsContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   weightNum: {
     marginTop: 4,
-    marginLeft: 16,
     marginBottom: 4,
     fontSize: 24,
   },
@@ -60,7 +64,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   repsNum: {
-    marginLeft: 40,
     fontSize: 24,
   },
   repsLabel: {
@@ -208,18 +211,23 @@ class ExerciseScreen extends React.Component {
       renderRightActions={this.getRightActions(setObj)}
     >
       <View style={styles.setRow}>
-        <Text style={styles.weightNum}>{setObj.weight} </Text>
-        <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+        <View style={styles.alignedColumnsContainer}>
+          <Text style={styles.weightNum}>{setObj.weight} </Text>
+          <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+        </View>
 
-        <Text style={styles.repsNum}>{setObj.reps} </Text>
-        <Text style={styles.repsLabel}>reps</Text>
-        { // Only render RPE if the field exists
-          setObj.rpe ? (
-            <Text style={styles.rpe}>
-              RPE {setObj.rpe}
-            </Text>
-          ) : []
-        }
+        <View style={styles.alignedColumnsContainer}>
+          <Text style={styles.repsNum}>{setObj.reps} </Text>
+          <Text style={styles.repsLabel}>reps</Text>
+        </View>
+
+        <Text style={[styles.rpe, styles.alignedColumnsContainer]}>
+          { // Only render RPE if the field exists
+            setObj.rpe ? (
+              `RPE ${setObj.rpe}`
+            ) : []
+          }
+        </Text>
       </View>
     </Swipeable>
   );

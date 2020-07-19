@@ -3,8 +3,8 @@
     "name": "StrengthNotes",
     "slug": "StrengthNotes",
     "platforms": [
-      "ios",
       "android",
+      "ios",
       "web"
     ],
     "version": "1.0.0",
@@ -21,7 +21,13 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.strengthnotes.strengthnotes",
+      "versionCode": 1
+    },
     "ios": {
+      "bundleIdentifier": "com.strengthnotes.strengthnotes",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     }
   }

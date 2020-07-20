@@ -7,11 +7,11 @@
 
 ![Tested Platforms](https://img.shields.io/static/v1.svg?label=tested%20platforms&message=android&color=green)
 
-### Complete app for strength training (powerlifting, weightlifting, and strongman)
+## Complete app for strength training (powerlifting, weightlifting, and strongman)
 
 Currently tested on Android only. Feel free to test on iOS or any platforms, and let me know how it goes.
 
-# Useful Links:
+## Useful Links
 
-- [Trello](https://trello.com/b/vJDhafyT/strengthnotes)
-- [Expo Project Page](https://expo.io/@sorbetonion/StrengthNotes)
+-  [Trello](https://trello.com/b/vJDhafyT/strengthnotes)
+-  [Expo Project Page](https://expo.io/@sorbetonion/StrengthNotes)

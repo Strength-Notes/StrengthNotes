@@ -7,7 +7,10 @@ import {
 } from 'react-native';
 import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import ExerciseProperties from '../../redux/ExerciseProperties';
 import { shapeOfSetObject } from '../../redux/store';
+import { getExerciseObjectFromName } from '../../redux/organizers';
 
 const styles = StyleSheet.create({
   exerciseName: {
@@ -54,9 +57,12 @@ class ExerciseCard extends React.Component {
     this.navigation = props.navigation;
     this.date = props.date; // Needed for navigation to ExerciseScreen
 
+    const exercise = getExerciseObjectFromName(props.exercises, this.name);
+
     this.state = {
       sets: props.sets,
       isSelected: false,
+      exercise,
     };
   }
 
@@ -97,30 +103,79 @@ class ExerciseCard extends React.Component {
     });
   }
 
-  getSetRow = (setObj) => (
-    <View
-      key={setObj.key}
-      style={styles.setRow}
-    >
-      <View style={styles.alignedColumnsContainer}>
-        <Text style={styles.weightNum}>{setObj.weight}</Text>
-        <Text style={styles.weightUnit}> {setObj.weightUnit}</Text>
-      </View>
+  // For whatever bizarre reason, an error occurs when making this an arrow func
+  // eslint-disable-next-line class-methods-use-this
+  getExercisePropertyView({ setObj, property }) {
+    switch (property) {
+      case ExerciseProperties.WEIGHT: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.weightNum}>{setObj.weight} </Text>
+            <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.REPS: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.repsNum}>{setObj.reps} </Text>
+            <Text style={styles.repsLabel}>reps</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.DISTANCE: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.repsNum}>{setObj.distance} </Text>
+            <Text style={styles.repsLabel}>{setObj.distanceUnit}</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.TIME: {
+        const formattedTime = new Date(setObj.time * 1000)
+          .toISOString()
+          .substr(11, 8);
+        return (
+          <View style={[styles.alignedColumnsContainer, { marginLeft: 20 }]}>
+            <Text style={styles.repsNum}>{formattedTime}</Text>
+          </View>
+        );
+      }
+      default: {
+        return (<View style={styles.alignedColumnsContainer} />);
+      }
+    }
+  }
 
-      <View style={styles.alignedColumnsContainer}>
-        <Text style={styles.repsNum}>{setObj.reps}</Text>
-        <Text style={styles.repsLabel}> reps</Text>
-      </View>
+  getSetRow = (setObj) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    const { primary, secondary } = this.state.exercise;
 
-      <Text style={styles.rpe}>
-        { // Only render RPE if the field exists
-          setObj.rpe ? (
-            `RPE ${setObj.rpe}`
-          ) : []
-        }
-      </Text>
-    </View>
-  );
+    return (
+      <View
+        key={setObj.key}
+        style={styles.setRow}
+      >
+        <this.getExercisePropertyView
+          setObj={setObj}
+          property={primary}
+        />
+
+        <this.getExercisePropertyView
+          setObj={setObj}
+          property={secondary}
+        />
+
+        <Text style={styles.rpe}>
+          { // Only render RPE if the field exists
+            setObj.rpe ? (
+              `RPE ${setObj.rpe}`
+            ) : []
+          }
+        </Text>
+      </View>
+    );
+  }
 
   render() {
     const { isSelected, sets } = this.state;
@@ -155,6 +210,11 @@ ExerciseCard.propTypes = {
     navigate: PropTypes.func.isRequired,
   }).isRequired,
   date: PropTypes.string.isRequired,
+  exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default ExerciseCard;
+const mapStateToProps = (state) => ({
+  exercises: state.exercises,
+});
+
+export default connect(mapStateToProps)(ExerciseCard);

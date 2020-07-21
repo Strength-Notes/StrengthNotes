@@ -14,6 +14,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
+import ExerciseProperties from '../../redux/ExerciseProperties';
 import {
   getSetsAtDate,
   getSetsOfExercise,
@@ -167,6 +168,7 @@ class ExerciseScreen extends React.Component {
     };
   }
 
+  // eslint-disable-next-line react/sort-comp
   addSetHandler = () => {
     let { weightInput, repsInput, rpeInput } = this.state;
 
@@ -206,31 +208,80 @@ class ExerciseScreen extends React.Component {
     );
   };
 
-  getSetRow = ({ setObj }) => (
-    <Swipeable
-      renderRightActions={this.getRightActions(setObj)}
-    >
-      <View style={styles.setRow}>
-        <View style={styles.alignedColumnsContainer}>
-          <Text style={styles.weightNum}>{setObj.weight} </Text>
-          <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
-        </View>
+  // For whatever bizarre reason, an error occurs when making this an arrow func
+  // eslint-disable-next-line class-methods-use-this
+  getExercisePropertyView({ setObj, property }) {
+    switch (property) {
+      case ExerciseProperties.WEIGHT: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.weightNum}>{setObj.weight} </Text>
+            <Text style={styles.weightUnit}>{setObj.weightUnit}</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.REPS: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.repsNum}>{setObj.reps} </Text>
+            <Text style={styles.repsLabel}>reps</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.DISTANCE: {
+        return (
+          <View style={styles.alignedColumnsContainer}>
+            <Text style={styles.repsNum}>{setObj.distance} </Text>
+            <Text style={styles.repsLabel}>{setObj.distanceUnit}</Text>
+          </View>
+        );
+      }
+      case ExerciseProperties.TIME: {
+        const formattedTime = new Date(setObj.time * 1000)
+          .toISOString()
+          .substr(11, 8);
+        return (
+          <View style={[styles.alignedColumnsContainer, { marginLeft: 20 }]}>
+            <Text style={styles.repsNum}>{formattedTime}</Text>
+          </View>
+        );
+      }
+      default: {
+        return (<View style={styles.alignedColumnsContainer} />);
+      }
+    }
+  }
 
-        <View style={styles.alignedColumnsContainer}>
-          <Text style={styles.repsNum}>{setObj.reps} </Text>
-          <Text style={styles.repsLabel}>reps</Text>
-        </View>
+  getSetRow = ({ setObj }) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    const { primary, secondary } = this.state.exercise;
 
-        <Text style={[styles.rpe, styles.alignedColumnsContainer]}>
-          { // Only render RPE if the field exists
-            setObj.rpe ? (
-              `RPE ${setObj.rpe}`
-            ) : []
-          }
-        </Text>
-      </View>
-    </Swipeable>
-  );
+    return (
+      <Swipeable
+        renderRightActions={this.getRightActions(setObj)}
+      >
+        <View style={styles.setRow}>
+          <this.getExercisePropertyView
+            setObj={setObj}
+            property={primary}
+          />
+
+          <this.getExercisePropertyView
+            setObj={setObj}
+            property={secondary}
+          />
+
+          <Text style={[styles.rpe, styles.alignedColumnsContainer]}>
+            { // Only render RPE if the field exists
+              setObj.rpe ? (
+                `RPE ${setObj.rpe}`
+              ) : []
+            }
+          </Text>
+        </View>
+      </Swipeable>
+    );
+  };
 
   getFooter = () => (
     <View style={styles.footerContainer}>

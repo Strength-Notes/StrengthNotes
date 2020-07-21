@@ -118,12 +118,19 @@ const dumbbellBenchTimeExercise = {
   secondary: ExerciseProperties.TIME,
 };
 
+const farmersCarryExercise = {
+  name: 'Farmer Carry',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.DISTANCE,
+};
+
 store.dispatch(addExerciseAction(squatExercise));
 store.dispatch(addExerciseAction(benchExercise));
 store.dispatch(addExerciseAction(deadliftExercise));
 store.dispatch(addExerciseAction(cleanAndJerkExercise));
 store.dispatch(addExerciseAction(bodyweightPullupsExercise));
 store.dispatch(addExerciseAction(dumbbellBenchTimeExercise));
+store.dispatch(addExerciseAction(farmersCarryExercise));
 
 export const shapeOfSetObject = PropTypes.shape({
   key: PropTypes.string.isRequired,

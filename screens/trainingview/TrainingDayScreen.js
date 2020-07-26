@@ -25,7 +25,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  headerBarTouchable: {
+  headerBarCalendarButton: {
+    margin: 10,
+  },
+  headerBarAddExerciseButton: {
     margin: 10,
   },
   container: {
@@ -62,7 +65,18 @@ class TrainingDayScreen extends React.Component {
       headerRight: () => (
         <View style={styles.headerBarRightContainer}>
           <TouchableOpacity
-            style={styles.headerBarTouchable}
+            style={styles.headerBarAddExerciseButton}
+            onPress={() => {
+              this.navigation.navigate(
+                'AddExerciseScreen',
+                { date: this.state.date }, // eslint-disable-line react/destructuring-assignment
+              );
+            }}
+          >
+            <Icon name="plus" size={40} color="#999" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerBarCalendarButton}
             onPress={() => {
               this.navigation.navigate(
                 'TrainingCalendar',

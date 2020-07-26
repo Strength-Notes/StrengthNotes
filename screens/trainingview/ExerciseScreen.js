@@ -5,6 +5,7 @@ import {
   Animated,
   TouchableOpacity,
   TextInput,
+  Picker,
   Text,
   View,
   SafeAreaView,
@@ -79,26 +80,45 @@ const styles = StyleSheet.create({
     backgroundColor: '#6f6b70',
     height: 40,
   },
+  compoundContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
   weightInput: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 5,
     margin: 3,
-    marginLeft: 32,
-    width: 81,
   },
   repsInput: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 5,
     margin: 3,
-    marginLeft: 4,
-    width: 49,
+  },
+  distanceInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    margin: 3,
+  },
+  distanceUnitInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    margin: 3,
+  },
+  timeInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    margin: 3,
   },
   rpeInput: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 5,
     margin: 3,
-    marginLeft: 4,
-    width: 40,
   },
   addButton: {
     flex: 1,
@@ -159,28 +179,55 @@ class ExerciseScreen extends React.Component {
     const allSetsAtDate = getSetsAtDate(sets, date);
     const setsOfExercise = getSetsOfExercise(allSetsAtDate, exerciseString);
 
+    // Set a default for distanceUnitSelected
+    // If this isn't done, a bug will occur when adding sets with default selected
+    let distanceUnitSelected = 'm';
+    if (this.state) {
+      distanceUnitSelected = this.state.distanceUnitSelected; // eslint-disable-line
+    }
+
     // Return state object
     return {
       sets,
       date,
       exercise,
       setsOfExercise,
+      distanceUnitSelected,
     };
   }
 
   // eslint-disable-next-line react/sort-comp
   addSetHandler = () => {
-    let { weightInput, repsInput, rpeInput } = this.state;
-
-    if (weightInput === '' || repsInput === '') {
-      return; // Error: weight and reps cannot be blank
-    }
+    const { distanceUnitSelected } = this.state;
+    let {
+      weightInput,
+      repsInput,
+      distanceInput,
+      hoursInput,
+      minutesInput,
+      secondsInput,
+      rpeInput,
+    } = this.state;
 
     weightInput = Number(weightInput);
     repsInput = Number(repsInput);
+    distanceInput = Number(distanceInput);
+    hoursInput = Number(hoursInput);
+    minutesInput = Number(minutesInput);
+    secondsInput = Number(secondsInput);
     rpeInput = Number(rpeInput);
 
-    this.addSetDispatch(this.state, weightInput, repsInput, rpeInput);
+    const time = hoursInput * 3600 + minutesInput * 60 + secondsInput;
+
+    this.addSetDispatch(
+      this.state,
+      weightInput,
+      repsInput,
+      distanceInput,
+      distanceUnitSelected,
+      time,
+      rpeInput,
+    );
   }
 
   getRightActions = (setObj) => (dragX) => {
@@ -283,41 +330,143 @@ class ExerciseScreen extends React.Component {
     );
   };
 
-  getFooter = () => (
-    <View style={styles.footerContainer}>
-      <TextInput
-        style={styles.weightInput}
-        onChangeText={(text) => { this.setState({ weightInput: text }); }}
-        value={this.state.weightInput} // eslint-disable-line
-        placeholder="Weight"
-        keyboardType="decimal-pad"
-        maxLength={7}
-      />
-      <TextInput
-        style={styles.repsInput}
-        onChangeText={(text) => { this.setState({ repsInput: text }); }}
-        value={this.state.repsInput} // eslint-disable-line
-        placeholder="Reps"
-        keyboardType="decimal-pad"
-        maxLength={4}
-      />
-      <TextInput
-        style={styles.rpeInput}
-        onChangeText={(text) => { this.setState({ rpeInput: text }); }}
-        value={this.state.rpeInput} // eslint-disable-line
-        placeholder="RPE"
-        keyboardType="decimal-pad"
-        maxLength={4}
+  // Cannot be made into an arrow function, as it results in a bug with Expo
+  // eslint-disable-next-line class-methods-use-this
+  getExerciseInput({ property, state, setState }) {
+    switch (property) {
+      case ExerciseProperties.WEIGHT: {
+        return (
+          <TextInput
+            style={styles.weightInput}
+            onChangeText={(text) => {
+              setState({ weightInput: text });
+            }}
+            value={state.weightInput}
+            placeholder="Weight"
+            keyboardType="decimal-pad"
+            maxLength={7}
+          />
+        );
+      }
+      case ExerciseProperties.REPS: {
+        return (
+          <TextInput
+            style={styles.repsInput}
+            onChangeText={(text) => {
+              setState({ repsInput: text });
+            }}
+            value={state.repsInput}
+            placeholder="Reps"
+            keyboardType="decimal-pad"
+            maxLength={4}
+          />
+        );
+      }
+      case ExerciseProperties.DISTANCE: {
+        return ( // TODO: change these styles
+          <View style={[styles.compoundContainer, { flex: 2 }]}>
+            <TextInput
+              style={styles.distanceInput}
+              onChangeText={(text) => {
+                setState({ distanceInput: text });
+              }}
+              value={state.distanceInput}
+              placeholder="Distance"
+              keyboardType="decimal-pad"
+              maxLength={7}
+            />
+            <Picker
+              style={styles.distanceUnitInput}
+              selectedValue={state.distanceUnitSelected}
+              onValueChange={(selected) => {
+                setState({ distanceUnitSelected: selected });
+              }}
+              mode="dropdown"
+            >
+              <Picker.Item label="m" value="m" />
+              <Picker.Item label="km" value="km" />
+              <Picker.Item label="yd" value="yd" />
+              <Picker.Item label="mi" value="mi" />
+            </Picker>
+          </View>
+        );
+      }
+      case ExerciseProperties.TIME: {
+        return ( // TODO: change these styles
+          <View style={[styles.compoundContainer, { flex: 3 }]}>
+            <TextInput
+              style={styles.timeInput}
+              onChangeText={(text) => {
+                setState({ hoursInput: text });
+              }}
+              value={state.hoursInput}
+              placeholder="HH"
+              keyboardType="decimal-pad"
+              maxLength={4}
+            />
+            <TextInput
+              style={styles.timeInput}
+              onChangeText={(text) => {
+                setState({ minutesInput: text });
+              }}
+              value={state.minutesInput}
+              placeholder="MM"
+              keyboardType="decimal-pad"
+              maxLength={4}
+            />
+            <TextInput
+              style={styles.timeInput}
+              onChangeText={(text) => {
+                setState({ secondsInput: text });
+              }}
+              value={state.secondsInput}
+              placeholder="SS"
+              keyboardType="decimal-pad"
+              maxLength={4}
+            />
+          </View>
+        );
+      }
+      default: {
+        return <View />;
+      }
+    }
+  }
 
-      />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={this.addSetHandler}
-      >
-        <Text style={styles.addButtonText}>Add Set</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  getFooter = () => {
+    const { exercise } = this.state;
+    const { primary, secondary } = exercise;
+
+    return (
+      <View style={styles.footerContainer}>
+        <this.getExerciseInput
+          property={primary}
+          state={this.state}
+          setState={(newState) => { this.setState(newState); }}
+        />
+        <this.getExerciseInput
+          property={secondary}
+          state={this.state}
+          setState={(newState) => { this.setState(newState); }}
+        />
+
+        <TextInput
+          style={styles.rpeInput}
+          onChangeText={(text) => { this.setState({ rpeInput: text }); }}
+          value={this.state.rpeInput} // eslint-disable-line
+          placeholder="RPE"
+          keyboardType="decimal-pad"
+          maxLength={4}
+        />
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={this.addSetHandler}
+        >
+          <Text style={styles.addButtonText}>Add Set</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   render() {
     const { exercise, setsOfExercise } = this.state;
@@ -384,7 +533,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addSetDispatch: (state, weight, reps, rpe) => {
+  addSetDispatch: (state, weight, reps, distance, distanceUnit, time, rpe) => {
     dispatch(addSetAction({
       key: `${state.date}-${state.exercise}-${Date.now()}`,
       date: state.date,
@@ -392,6 +541,9 @@ const mapDispatchToProps = (dispatch) => ({
       weight,
       weightUnit: 'lbs',
       reps,
+      distance,
+      distanceUnit,
+      time,
       rpe,
     }));
   },

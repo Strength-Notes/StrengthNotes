@@ -121,9 +121,8 @@ const styles = StyleSheet.create({
     margin: 3,
   },
   addButton: {
-    flex: 1,
     margin: 3,
-    marginLeft: 16,
+    marginLeft: 8,
   },
   addButtonText: {
     flex: 1,
@@ -407,7 +406,7 @@ class ExerciseScreen extends React.Component {
               value={state.hoursInput}
               placeholder="HH"
               keyboardType="decimal-pad"
-              maxLength={4}
+              maxLength={2}
             />
             <TextInput
               style={styles.timeInput}
@@ -417,7 +416,7 @@ class ExerciseScreen extends React.Component {
               value={state.minutesInput}
               placeholder="MM"
               keyboardType="decimal-pad"
-              maxLength={4}
+              maxLength={2}
             />
             <TextInput
               style={styles.timeInput}
@@ -427,7 +426,7 @@ class ExerciseScreen extends React.Component {
               value={state.secondsInput}
               placeholder="SS"
               keyboardType="decimal-pad"
-              maxLength={4}
+              maxLength={5}
             />
           </View>
         );
@@ -467,7 +466,7 @@ class ExerciseScreen extends React.Component {
           style={styles.addButton}
           onPress={this.addSetHandler}
         >
-          <Text style={styles.addButtonText}>Add Set</Text>
+          <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
       </View>
     );

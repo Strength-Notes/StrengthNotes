@@ -217,6 +217,11 @@ class ExerciseScreen extends React.Component {
     secondsInput = Number(secondsInput);
     rpeInput = Number(rpeInput);
 
+    // Set all NaNs or undefs to 0, to prevent time becoming NaN
+    if (!hoursInput) hoursInput = 0;
+    if (!minutesInput) minutesInput = 0;
+    if (!secondsInput) secondsInput = 0;
+
     const time = hoursInput * 3600 + minutesInput * 60 + secondsInput;
 
     this.addSetDispatch(
@@ -284,7 +289,7 @@ class ExerciseScreen extends React.Component {
         );
       }
       case ExerciseProperties.TIME: {
-        const formattedTime = new Date(setObj.time * 1000)
+        const formattedTime = new Date(setObj.time * 1000 || 0) // 0 if NaN
           .toISOString()
           .substr(11, 8);
         return (

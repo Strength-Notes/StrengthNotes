@@ -132,7 +132,7 @@ class ExerciseCard extends React.Component {
         );
       }
       case ExerciseProperties.TIME: {
-        const formattedTime = new Date(setObj.time * 1000)
+        const formattedTime = new Date(setObj.time * 1000 || 0) // 0 if NaN
           .toISOString()
           .substr(11, 8);
         return (

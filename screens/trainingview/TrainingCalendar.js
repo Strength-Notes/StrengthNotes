@@ -22,10 +22,12 @@ const TrainingCalendar = ({ navigation, route }) => {
       <Calendar
         startDate={selectedDateObj}
         onChange={(range) => {
-          navigation.navigate(
-            'TrainingDayScreen',
-            { date: getFormattedDateString(range.startDate) },
-          );
+          requestAnimationFrame(() => {
+            navigation.navigate(
+              'TrainingDayScreen',
+              { date: getFormattedDateString(range.startDate) },
+            );
+          });
         }}
         disableRange
       />

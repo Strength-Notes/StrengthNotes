@@ -67,10 +67,12 @@ class TrainingDayScreen extends React.Component {
           <TouchableOpacity
             style={styles.headerBarAddExerciseButton}
             onPress={() => {
-              this.navigation.navigate(
-                'AddExerciseScreen',
-                { date: this.state.date }, // eslint-disable-line react/destructuring-assignment
-              );
+              requestAnimationFrame(() => {
+                this.navigation.navigate(
+                  'AddExerciseScreen',
+                  { date: this.state.date }, // eslint-disable-line react/destructuring-assignment
+                );
+              });
             }}
           >
             <Icon name="plus" size={40} color="#999" />
@@ -78,11 +80,13 @@ class TrainingDayScreen extends React.Component {
           <TouchableOpacity
             style={styles.headerBarCalendarButton}
             onPress={() => {
-              this.navigation.navigate(
-                'TrainingCalendar',
-                // eslint-disable-next-line react/destructuring-assignment
-                { selectedDate: this.state.date },
-              );
+              requestAnimationFrame(() => {
+                this.navigation.navigate(
+                  'TrainingCalendar',
+                  // eslint-disable-next-line react/destructuring-assignment
+                  { selectedDate: this.state.date },
+                );
+              });
             }}
           >
             <MaterialIcon

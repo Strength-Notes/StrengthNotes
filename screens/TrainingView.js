@@ -42,10 +42,12 @@ const TrainingView = ({ navigation }) => (
             <TouchableOpacity
               style={styles.calendarTouchable}
               onPress={() => {
-                navigation.navigate(
-                  'TrainingCalendar',
-                  { selectedDate: getFormattedDateString(new Date()) },
-                );
+                requestAnimationFrame(() => {
+                  navigation.navigate(
+                    'TrainingCalendar',
+                    { selectedDate: getFormattedDateString(new Date()) },
+                  );
+                });
               }}
             >
               <Icon

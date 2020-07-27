@@ -77,13 +77,16 @@ class ExerciseCard extends React.Component {
     if (isSelected) {
       this.toggleSelected();
     } else {
-      this.navigation.navigate(
-        'ExerciseScreen',
-        {
-          date: this.date,
-          exerciseString: this.name,
-        },
-      );
+      // Run in animation frame for improved performance
+      requestAnimationFrame(() => {
+        this.navigation.navigate(
+          'ExerciseScreen',
+          {
+            date: this.date,
+            exerciseString: this.name,
+          },
+        );
+      });
     }
   }
 

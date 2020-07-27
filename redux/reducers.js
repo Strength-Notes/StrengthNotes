@@ -2,12 +2,17 @@ import { combineReducers } from 'redux';
 import arrayMove from 'array-move';
 import {
   ADD_SET,
+  UPDATE_SET_COMMENT,
   REMOVE_SET,
   MOVE_SET,
   ADD_EXERCISE,
   REMOVE_EXERCISE,
 } from './actions';
 
+/**
+ * @brief Finds the array index of the set matching the input key from
+ *  the given array.
+ */
 function findSetInArrayByKey(setsArray, key) {
   for (let i = 0; i < setsArray.length; i++) { // eslint-disable-line
     if (setsArray[i].key === key) {
@@ -28,6 +33,15 @@ function setReducer(state = [{}], action) {
       } else {
         newState[0][date] = [...newState[0][date], action.payload];
       }
+      return newState;
+    }
+    case UPDATE_SET_COMMENT: {
+      const { set, newComment } = action.payload;
+      const { date, key } = set;
+
+      const setIndex = findSetInArrayByKey(newState[0][date], key);
+
+      newState[0][date][setIndex].comment = newComment;
       return newState;
     }
     case REMOVE_SET: {

@@ -15,6 +15,8 @@ import { RectButton } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
+// eslint-disable-next-line import/no-named-default
+import { default as MaterialIcon } from 'react-native-vector-icons/MaterialIcons';
 import ExerciseProperties from '../../redux/ExerciseProperties';
 import {
   getSetsAtDate,
@@ -23,9 +25,11 @@ import {
 } from '../../redux/organizers';
 import {
   addSetAction,
+  updateSetCommentAction,
   removeSetAction,
   moveSetAction,
 } from '../../redux/actions';
+import CommentModal from './CommentModal';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
@@ -56,6 +60,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  setCommentButton: {
+    marginTop: 2,
+    marginLeft: 2,
   },
   weightNum: {
     marginTop: 4,
@@ -153,6 +161,7 @@ class ExerciseScreen extends React.Component {
 
     this.navigation = props.navigation;
     this.addSetDispatch = props.addSetDispatch;
+    this.updateSetCommentDispatch = props.updateSetCommentDispatch;
     this.removeSetDispatch = props.removeSetDispatch;
     this.moveSetDispatch = props.moveSetDispatch;
 
@@ -234,6 +243,19 @@ class ExerciseScreen extends React.Component {
     );
   }
 
+  openCommentModal = (setObj) => () => {
+    this.setState({
+      commentModalVisible: true,
+      commentModalSet: setObj,
+    });
+  }
+
+  closeCommentModal = () => {
+    this.setState({
+      commentModalVisible: false,
+    });
+  }
+
   getRightActions = (setObj) => (dragX) => {
     const trans = dragX.interpolate({
       inputRange: [-10, 0],
@@ -306,12 +328,23 @@ class ExerciseScreen extends React.Component {
   getSetRow = ({ setObj }) => {
     // eslint-disable-next-line react/destructuring-assignment
     const { primary, secondary } = this.state.exercise;
+    const { comment } = setObj;
 
     return (
       <Swipeable
         renderRightActions={this.getRightActions(setObj)}
       >
         <View style={styles.setRow}>
+          <TouchableOpacity
+            style={styles.setCommentButton}
+            onPress={this.openCommentModal(setObj)}
+          >
+            <MaterialIcon
+              name={comment ? 'chat' : 'chat-bubble-outline'}
+              size={32}
+            />
+          </TouchableOpacity>
+
           <this.getExercisePropertyView
             setObj={setObj}
             property={primary}
@@ -473,10 +506,24 @@ class ExerciseScreen extends React.Component {
   }
 
   render() {
-    const { exercise, setsOfExercise } = this.state;
+    const {
+      exercise,
+      setsOfExercise,
+      commentModalVisible,
+      commentModalSet,
+    } = this.state;
 
     return (
       <SafeAreaView style={styles.container}>
+        <CommentModal
+          comment={commentModalSet ? commentModalSet.comment : ''}
+          onChangeComment={(newComment) => {
+            this.updateSetCommentDispatch(commentModalSet, newComment);
+          }}
+          modalVisible={commentModalVisible || false}
+          closeModal={this.closeCommentModal}
+        />
+
         <View style={styles.header}>
           <Text style={styles.exerciseTitle}>{exercise.name}</Text>
         </View>
@@ -520,6 +567,7 @@ ExerciseScreen.propTypes = {
     }).isRequired,
   }).isRequired,
   addSetDispatch: PropTypes.func.isRequired,
+  updateSetCommentDispatch: PropTypes.func.isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
   moveSetDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
@@ -550,6 +598,9 @@ const mapDispatchToProps = (dispatch) => ({
       time,
       rpe,
     }));
+  },
+  updateSetCommentDispatch: (set, newComment) => {
+    dispatch(updateSetCommentAction(set, newComment));
   },
   removeSetDispatch: (key) => {
     dispatch(removeSetAction(key));

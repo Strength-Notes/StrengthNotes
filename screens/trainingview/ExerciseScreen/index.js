@@ -16,20 +16,20 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 import Icon from 'react-native-vector-icons/Feather';
 // eslint-disable-next-line import/no-named-default
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialIcons';
-import ExerciseProperties from '../../redux/ExerciseProperties';
+import ExerciseProperties from '../../../redux/ExerciseProperties';
 import {
   getSetsAtDate,
   getSetsOfExercise,
   getExerciseObjectFromName,
-} from '../../redux/organizers';
+} from '../../../redux/organizers';
 import {
   addSetAction,
   updateSetCommentAction,
   removeSetAction,
   moveSetAction,
-} from '../../redux/actions';
+} from '../../../redux/actions';
 import CommentModal from './CommentModal';
-import styles from './ExerciseScreen.styles';
+import styles from './styles';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 

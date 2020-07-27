@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Animated,
   TouchableOpacity,
-  TextInput,
-  Picker,
   Text,
   View,
   SafeAreaView,
@@ -23,12 +21,12 @@ import {
   getExerciseObjectFromName,
 } from '../../../redux/organizers';
 import {
-  addSetAction,
   updateSetCommentAction,
   removeSetAction,
   moveSetAction,
 } from '../../../redux/actions';
 import CommentModal from './CommentModal';
+import Footer from './Footer';
 import styles from './styles';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
@@ -38,7 +36,6 @@ class ExerciseScreen extends React.Component {
     super(props);
 
     this.navigation = props.navigation;
-    this.addSetDispatch = props.addSetDispatch;
     this.updateSetCommentDispatch = props.updateSetCommentDispatch;
     this.removeSetDispatch = props.removeSetDispatch;
     this.moveSetDispatch = props.moveSetDispatch;
@@ -80,58 +77,6 @@ class ExerciseScreen extends React.Component {
       setsOfExercise,
       distanceUnitSelected,
     };
-  }
-
-  // eslint-disable-next-line react/sort-comp
-  addSetHandler = () => {
-    const { distanceUnitSelected } = this.state;
-    let {
-      weightInput,
-      repsInput,
-      distanceInput,
-      hoursInput,
-      minutesInput,
-      secondsInput,
-      rpeInput,
-    } = this.state;
-
-    weightInput = Number(weightInput);
-    repsInput = Number(repsInput);
-    distanceInput = Number(distanceInput);
-    hoursInput = Number(hoursInput);
-    minutesInput = Number(minutesInput);
-    secondsInput = Number(secondsInput);
-    rpeInput = Number(rpeInput);
-
-    // Set all NaNs or undefs to 0, to prevent time becoming NaN
-    if (!hoursInput) hoursInput = 0;
-    if (!minutesInput) minutesInput = 0;
-    if (!secondsInput) secondsInput = 0;
-
-    const time = hoursInput * 3600 + minutesInput * 60 + secondsInput;
-
-    this.addSetDispatch(
-      this.state,
-      weightInput,
-      repsInput,
-      distanceInput,
-      distanceUnitSelected,
-      time,
-      rpeInput,
-    );
-  }
-
-  openCommentModal = (setObj) => () => {
-    this.setState({
-      commentModalVisible: true,
-      commentModalSet: setObj,
-    });
-  }
-
-  closeCommentModal = () => {
-    this.setState({
-      commentModalVisible: false,
-    });
   }
 
   getRightActions = (setObj) => (dragX) => {
@@ -203,6 +148,19 @@ class ExerciseScreen extends React.Component {
     }
   }
 
+  openCommentModal = (setObj) => () => {
+    this.setState({
+      commentModalVisible: true,
+      commentModalSet: setObj,
+    });
+  }
+
+  closeCommentModal = () => {
+    this.setState({
+      commentModalVisible: false,
+    });
+  }
+
   getSetRow = ({ setObj }) => {
     // eslint-disable-next-line react/destructuring-assignment
     const { primary, secondary } = this.state.exercise;
@@ -245,146 +203,9 @@ class ExerciseScreen extends React.Component {
     );
   };
 
-  // Cannot be made into an arrow function, as it results in a bug with Expo
-  // eslint-disable-next-line class-methods-use-this
-  getExerciseInput({ property, state, setState }) {
-    switch (property) {
-      case ExerciseProperties.WEIGHT: {
-        return (
-          <TextInput
-            style={styles.weightInput}
-            onChangeText={(text) => {
-              setState({ weightInput: text });
-            }}
-            value={state.weightInput}
-            placeholder="Weight"
-            keyboardType="decimal-pad"
-            maxLength={7}
-          />
-        );
-      }
-      case ExerciseProperties.REPS: {
-        return (
-          <TextInput
-            style={styles.repsInput}
-            onChangeText={(text) => {
-              setState({ repsInput: text });
-            }}
-            value={state.repsInput}
-            placeholder="Reps"
-            keyboardType="decimal-pad"
-            maxLength={4}
-          />
-        );
-      }
-      case ExerciseProperties.DISTANCE: {
-        return ( // TODO: change these styles
-          <View style={[styles.compoundContainer, { flex: 2 }]}>
-            <TextInput
-              style={styles.distanceInput}
-              onChangeText={(text) => {
-                setState({ distanceInput: text });
-              }}
-              value={state.distanceInput}
-              placeholder="Distance"
-              keyboardType="decimal-pad"
-              maxLength={7}
-            />
-            <Picker
-              style={styles.distanceUnitInput}
-              selectedValue={state.distanceUnitSelected}
-              onValueChange={(selected) => {
-                setState({ distanceUnitSelected: selected });
-              }}
-              mode="dropdown"
-            >
-              <Picker.Item label="m" value="m" />
-              <Picker.Item label="km" value="km" />
-              <Picker.Item label="yd" value="yd" />
-              <Picker.Item label="mi" value="mi" />
-            </Picker>
-          </View>
-        );
-      }
-      case ExerciseProperties.TIME: {
-        return ( // TODO: change these styles
-          <View style={[styles.compoundContainer, { flex: 3 }]}>
-            <TextInput
-              style={styles.timeInput}
-              onChangeText={(text) => {
-                setState({ hoursInput: text });
-              }}
-              value={state.hoursInput}
-              placeholder="HH"
-              keyboardType="decimal-pad"
-              maxLength={2}
-            />
-            <TextInput
-              style={styles.timeInput}
-              onChangeText={(text) => {
-                setState({ minutesInput: text });
-              }}
-              value={state.minutesInput}
-              placeholder="MM"
-              keyboardType="decimal-pad"
-              maxLength={2}
-            />
-            <TextInput
-              style={styles.timeInput}
-              onChangeText={(text) => {
-                setState({ secondsInput: text });
-              }}
-              value={state.secondsInput}
-              placeholder="SS"
-              keyboardType="decimal-pad"
-              maxLength={5}
-            />
-          </View>
-        );
-      }
-      default: {
-        return <View />;
-      }
-    }
-  }
-
-  getFooter = () => {
-    const { exercise } = this.state;
-    const { primary, secondary } = exercise;
-
-    return (
-      <View style={styles.footerContainer}>
-        <this.getExerciseInput
-          property={primary}
-          state={this.state}
-          setState={(newState) => { this.setState(newState); }}
-        />
-        <this.getExerciseInput
-          property={secondary}
-          state={this.state}
-          setState={(newState) => { this.setState(newState); }}
-        />
-
-        <TextInput
-          style={styles.rpeInput}
-          onChangeText={(text) => { this.setState({ rpeInput: text }); }}
-          value={this.state.rpeInput} // eslint-disable-line
-          placeholder="RPE"
-          keyboardType="decimal-pad"
-          maxLength={4}
-        />
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={this.addSetHandler}
-        >
-          <Text style={styles.addButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   render() {
     const {
+      date,
       exercise,
       setsOfExercise,
       commentModalVisible,
@@ -426,7 +247,10 @@ class ExerciseScreen extends React.Component {
           }}
         />
 
-        <this.getFooter />
+        <Footer
+          date={date}
+          exercise={exercise}
+        />
       </SafeAreaView>
     );
   }
@@ -444,7 +268,6 @@ ExerciseScreen.propTypes = {
       exerciseString: PropTypes.string,
     }).isRequired,
   }).isRequired,
-  addSetDispatch: PropTypes.func.isRequired,
   updateSetCommentDispatch: PropTypes.func.isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
   moveSetDispatch: PropTypes.func.isRequired,
@@ -463,20 +286,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addSetDispatch: (state, weight, reps, distance, distanceUnit, time, rpe) => {
-    dispatch(addSetAction({
-      key: `${state.date}-${state.exercise}-${Date.now()}`,
-      date: state.date,
-      exercise: state.exercise.name,
-      weight,
-      weightUnit: 'lbs',
-      reps,
-      distance,
-      distanceUnit,
-      time,
-      rpe,
-    }));
-  },
   updateSetCommentDispatch: (set, newComment) => {
     dispatch(updateSetCommentAction(set, newComment));
   },

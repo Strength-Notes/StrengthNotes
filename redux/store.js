@@ -1,4 +1,6 @@
 import { createStore } from 'redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import ExpoFileSystemStorage from 'redux-persist-expo-filesystem';
 import PropTypes from 'prop-types';
 import {
   addSetAction,
@@ -8,7 +10,17 @@ import rootReducer from './reducers';
 import { getFormattedDateString } from './organizers';
 import ExerciseProperties from './ExerciseProperties';
 
-const store = createStore(rootReducer);
+const persistConfig = {
+  key: 'root',
+  storage: ExpoFileSystemStorage,
+  whiteList: ['sets', 'exercises'],
+};
+
+const store = createStore(
+  persistReducer(persistConfig, rootReducer),
+);
+
+const persistor = persistStore(store);
 
 /*
  * Default/Sample Sets
@@ -75,10 +87,12 @@ const exampleSetBench2 = {
   comment: null,
 };
 
-store.dispatch(addSetAction(exampleSetSquat));
-store.dispatch(addSetAction(exampleSetSquat2));
-store.dispatch(addSetAction(exampleSetBench));
-store.dispatch(addSetAction(exampleSetBench2));
+function addExamples() {
+  store.dispatch(addSetAction(exampleSetSquat));
+  store.dispatch(addSetAction(exampleSetSquat2));
+  store.dispatch(addSetAction(exampleSetBench));
+  store.dispatch(addSetAction(exampleSetBench2));
+}
 
 /*
  * Default/Sample Exercises
@@ -124,13 +138,18 @@ const farmersCarryExercise = {
   secondary: ExerciseProperties.DISTANCE,
 };
 
-store.dispatch(addExerciseAction(squatExercise));
-store.dispatch(addExerciseAction(benchExercise));
-store.dispatch(addExerciseAction(deadliftExercise));
-store.dispatch(addExerciseAction(cleanAndJerkExercise));
-store.dispatch(addExerciseAction(bodyweightPullupsExercise));
-store.dispatch(addExerciseAction(dumbbellBenchTimeExercise));
-store.dispatch(addExerciseAction(farmersCarryExercise));
+function addExercises() {
+  store.dispatch(addExerciseAction(squatExercise));
+  store.dispatch(addExerciseAction(benchExercise));
+  store.dispatch(addExerciseAction(deadliftExercise));
+  store.dispatch(addExerciseAction(cleanAndJerkExercise));
+  store.dispatch(addExerciseAction(bodyweightPullupsExercise));
+  store.dispatch(addExerciseAction(dumbbellBenchTimeExercise));
+  store.dispatch(addExerciseAction(farmersCarryExercise));
+}
+
+addExamples();
+addExercises();
 
 export const shapeOfSetObject = PropTypes.shape({
   key: PropTypes.string.isRequired,
@@ -147,4 +166,5 @@ export const shapeOfSetObject = PropTypes.shape({
   comment: PropTypes.string,
 });
 
+export { persistor };
 export default store;

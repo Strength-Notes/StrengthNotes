@@ -22,7 +22,7 @@
     "array-move": "^3.0.0",
     "expo": "^38.0.0",
     "prop-types": "^15.7.2",
-    "react": "16.13.1",
+    "react": "^16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-calendario": "^2.1.0",
@@ -38,7 +38,9 @@
     "react-native-vector-icons": "^7.0.0",
     "react-native-web": "~0.13.1",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "redux-persist": "^6.0.0",
+    "redux-persist-expo-filesystem": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { REHYDRATE } from 'redux-persist';
 import arrayMove from 'array-move';
 import {
   ADD_SET,
@@ -63,13 +64,17 @@ function setReducer(state = [{}], action) {
 
       return newState;
     }
+    case REHYDRATE: {
+      [newState[0]] = action.payload.sets;
+      return newState;
+    }
     default: {
       return newState;
     }
   }
 }
 
-function exercisesReducer(state = [], action) {
+function exercisesReducer(state = [{ name: 'Bench', primary: 'Weight', secondary: 'Reps' }], action) {
   let newState = [...state];
 
   switch (action.type) {

@@ -4,21 +4,20 @@ import {
   TouchableOpacity,
   Text,
   View,
+  Dimensions,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import DraggableFlatList from 'react-native-draggable-flatlist';
+import Animated, { Easing } from 'react-native-reanimated';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/AntDesign';
 // eslint-disable-next-line import/no-named-default
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ExerciseCard from './ExerciseCard';
 import {
-  getSetsAtDate,
-  getExercises,
-  getSetsOfExercise,
   getFormattedDateString,
   getDateObjectFromString,
-} from '../../redux/organizers';
+} from '../../../redux/organizers';
+import TrainingList from './TrainingList';
 
 const styles = StyleSheet.create({
   headerBarRightContainer: {
@@ -49,6 +48,18 @@ const styles = StyleSheet.create({
     margin: 16,
   },
 });
+
+const {
+  set,
+  cond,
+  block,
+  eq,
+  add,
+  multiply,
+  Value,
+  event,
+  call,
+} = Animated;
 
 class TrainingDayScreen extends React.Component {
   constructor(props) {
@@ -97,6 +108,22 @@ class TrainingDayScreen extends React.Component {
         </View>
       ),
     });
+
+    this.translateX = new Value(0);
+    const offsetX = new Value(0);
+
+    this.onPanGestureEvent = event([
+      {
+        nativeEvent: ({ translationX: x, state }) => (
+          block([
+            set(this.translateX, multiply(add(x, offsetX), 1.3)),
+            cond(eq(state, State.END), [
+              call([multiply(add(x, offsetX), 1.3)], this.onSwipeEnd),
+            ]),
+          ])
+        ),
+      },
+    ]);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
@@ -107,6 +134,13 @@ class TrainingDayScreen extends React.Component {
       date,
       sets,
     });
+  }
+
+  shiftDateString = (dateString, daysToShift) => {
+    const dateObj = getDateObjectFromString(dateString);
+    dateObj.setDate(dateObj.getDate() + daysToShift);
+
+    return getFormattedDateString(dateObj);
   }
 
   prettifyDateString = (dateString) => {
@@ -140,35 +174,81 @@ class TrainingDayScreen extends React.Component {
     return prettyDate;
   }
 
+  onSwipeEnd = ([xDistance]) => {
+    const { width } = Dimensions.get('window');
+    const xThreshold = width / 2;
+
+    const isLeft = xDistance > 0;
+
+    if ((isLeft && xDistance < xThreshold)
+      || (!isLeft && xDistance > -xThreshold)) {
+      // Didn't cross the activation point to change screens
+      Animated.timing(this.translateX, {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.inOut(Easing.ease),
+      }).start();
+    } else { // Switch screens
+      Animated.timing(this.translateX, {
+        toValue: isLeft ? width : -width,
+        duration: 100,
+        easing: Easing.inOut(Easing.ease),
+      }).start(
+        () => {
+          setTimeout(() => {
+            const { date } = this.state;
+
+            this.translateX.setValue(0);
+
+            this.setState({
+              date: this.shiftDateString(date, isLeft ? -1 : 1),
+            });
+          }, 0);
+        },
+      );
+    }
+  }
+
   render() {
     const { date, sets } = this.state;
-    let { exerciseNamesToday } = this.state;
-    const setsToday = getSetsAtDate(sets, date);
-    if (!exerciseNamesToday) {
-      exerciseNamesToday = getExercises(setsToday);
-    }
+
+    const { width } = Dimensions.get('window');
+
+    const yesterday = this.shiftDateString(date, -1);
+    const tomorrow = this.shiftDateString(date, 1);
 
     return (
       <View style={styles.container}>
         <View style={styles.dateHeaderContainer}>
           <Text style={styles.dateHeader}>{this.prettifyDateString(date)}</Text>
         </View>
-        <DraggableFlatList
-          data={exerciseNamesToday}
-          renderItem={
-            ({ item, drag }) => (
-              <ExerciseCard
-                name={item}
-                sets={getSetsOfExercise(setsToday, item)}
-                drag={drag}
-                navigation={this.navigation}
-                date={date}
-              />
-            )
-          }
-          keyExtractor={(item) => `draggable-item-${item}`}
-          onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
-        />
+        <PanGestureHandler
+          onGestureEvent={this.onPanGestureEvent}
+          onHandlerStateChange={this.onPanGestureEvent}
+        >
+          <Animated.View
+            style={[{ transform: [{ translateX: this.translateX }] }, { flex: 1, flexDirection: 'row' }]}
+          >
+            <TrainingList
+              navigation={this.navigation}
+              sets={sets}
+              date={yesterday}
+              xPositionOffset={-width}
+            />
+            <TrainingList
+              navigation={this.navigation}
+              sets={sets}
+              date={date}
+              xPositionOffset={-width / 3}
+            />
+            <TrainingList
+              navigation={this.navigation}
+              sets={sets}
+              date={tomorrow}
+              xPositionOffset={width / 3}
+            />
+          </Animated.View>
+        </PanGestureHandler>
       </View>
     );
   }

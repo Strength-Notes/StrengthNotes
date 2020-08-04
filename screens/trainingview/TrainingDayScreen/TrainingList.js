@@ -8,7 +8,7 @@ import {
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import PropTypes from 'prop-types';
 import { getSetsAtDate, getExercises, getSetsOfExercise } from '../../../redux/organizers';
-import ExerciseCard from '../ExerciseCard';
+import ExerciseCard from './ExerciseCard';
 
 const styles = StyleSheet.create({
   emptyDayView: {

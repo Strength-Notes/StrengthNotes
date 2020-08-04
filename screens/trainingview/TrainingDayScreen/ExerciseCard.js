@@ -1,16 +1,16 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableOpacity,
   Text,
   View,
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ExerciseProperties from '../../redux/ExerciseProperties';
-import { shapeOfSetObject } from '../../redux/store';
-import { getExerciseObjectFromName } from '../../redux/organizers';
+import ExerciseProperties from '../../../redux/ExerciseProperties';
+import { shapeOfSetObject } from '../../../redux/store';
+import { getExerciseObjectFromName } from '../../../redux/organizers';
 
 const styles = StyleSheet.create({
   exerciseName: {

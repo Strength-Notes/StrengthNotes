@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableOpacity,
   Text,
   View,
+  TouchableOpacity,
   Dimensions,
 } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
@@ -235,17 +235,19 @@ class TrainingDayScreen extends React.Component {
               date={yesterday}
               xPositionOffset={-width}
             />
-            <TrainingList
-              navigation={this.navigation}
-              sets={sets}
-              date={date}
-              xPositionOffset={-width / 3}
-            />
+            <View>
+              <TrainingList
+                navigation={this.navigation}
+                sets={sets}
+                date={date}
+                xPositionOffset={0}
+              />
+            </View>
             <TrainingList
               navigation={this.navigation}
               sets={sets}
               date={tomorrow}
-              xPositionOffset={width / 3}
+              xPositionOffset={0}
             />
           </Animated.View>
         </PanGestureHandler>

@@ -35,7 +35,11 @@ class CreateExerciseScreen extends React.Component {
     this.navigation = props.navigation;
     this.addExerciseDispatch = props.addExerciseDispatch;
 
-    this.state = {};
+    // Set defaults: needed to prevent bug when using default value
+    this.state = {
+      primarySelected: ExerciseProperties.WEIGHT,
+      secondarySelected: ExerciseProperties.REPS,
+    };
   }
 
   verifyInput = () => {

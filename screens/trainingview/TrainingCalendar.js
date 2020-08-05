@@ -1,35 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { Calendar } from 'react-native-calendario';
-import { getFormattedDateString, getDateObjectFromString } from '../../redux/organizers';
+import { Calendar } from 'react-native-calendars';
+import { getFormattedDateString } from '../../redux/organizers';
 
 const TrainingCalendar = ({ navigation, route }) => {
-  let selectedDateObj;
+  let selectedDateString;
 
   // Only access route.params.selectedDate is params exists
   if (route.params) {
-    selectedDateObj = getDateObjectFromString(route.params.selectedDate);
+    selectedDateString = route.params.selectedDate;
   }
 
-  if (!selectedDateObj) {
+  if (!selectedDateString) {
     // Default value is today
-    selectedDateObj = new Date();
+    selectedDateString = getFormattedDateString(new Date());
   }
+
+  const markedDates = {};
+  markedDates[selectedDateString] = { selected: true };
 
   return (
     <View>
       <Calendar
-        startDate={selectedDateObj}
-        onChange={(range) => {
+        current={selectedDateString}
+        markedDates={markedDates}
+        onDayPress={(day) => {
           requestAnimationFrame(() => {
             navigation.navigate(
               'TrainingDayScreen',
-              { date: getFormattedDateString(range.startDate) },
+              { date: day.dateString },
             );
           });
         }}
-        disableRange
+        enableSwipeMonths
       />
     </View>
   );

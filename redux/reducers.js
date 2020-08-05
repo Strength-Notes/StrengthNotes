@@ -23,6 +23,19 @@ function findSetInArrayByKey(setsArray, key) {
   return -1; // Not found...
 }
 
+/**
+ * @brief Finds the array index of the exercise matching the input name from
+ *  the given array.
+ */
+function findExerciseInArrayByName(exercisesArray, name) {
+  for (let i = 0; i < exercisesArray.length; i++) { // eslint-disable-line
+    if (exercisesArray[i].name === name) {
+      return i;
+    }
+  }
+  return -1; // Not found...
+}
+
 function setReducer(state = [{}], action) {
   const newState = [...state];
 
@@ -79,13 +92,20 @@ function exercisesReducer(state = [{ name: 'Bench', primary: 'Weight', secondary
 
   switch (action.type) {
     case ADD_EXERCISE: {
-      newState = [...newState, action.payload];
+      // Only add the new exercise def if no other exists with same name
+      if (findExerciseInArrayByName(newState, action.payload.name) === -1) {
+        newState = [...newState, action.payload];
+      }
       return newState;
     }
     case REMOVE_EXERCISE: {
       newState = newState.filter(
         (element) => (element.name !== action.payload.name),
       );
+      return newState;
+    }
+    case REHYDRATE: {
+      newState = action.payload.exercises;
       return newState;
     }
     default: {

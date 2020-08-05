@@ -85,7 +85,7 @@ class CreateExerciseScreen extends React.Component {
           >
             {
               Object.values(ExerciseProperties).map((item) => (
-                <Picker.Item label={item} value={item} />
+                <Picker.Item key={item} label={item} value={item} />
               ))
             }
           </Picker>
@@ -100,7 +100,7 @@ class CreateExerciseScreen extends React.Component {
           >
             {
               Object.values(ExerciseProperties).map((item) => (
-                <Picker.Item label={item} value={item} />
+                <Picker.Item key={item} label={item} value={item} />
               ))
             }
           </Picker>

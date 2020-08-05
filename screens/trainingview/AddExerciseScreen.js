@@ -1,14 +1,20 @@
 import React from 'react';
 import {
+  Animated,
   StyleSheet,
   TouchableOpacity,
   SectionList,
   Text,
   View,
 } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/AntDesign';
+// eslint-disable-next-line import/no-named-default
+import { default as FeatherIcon } from 'react-native-vector-icons/Feather';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { removeExerciseAction } from '../../redux/actions';
 
 const styles = StyleSheet.create({
   headerBarRightContainer: {
@@ -38,11 +44,15 @@ const styles = StyleSheet.create({
   },
 });
 
+const AnimatedFeatherIcon = Animated.createAnimatedComponent(FeatherIcon);
+
 class AddExerciseScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.navigation = props.navigation;
+
+    this.removeExerciseDispatch = props.removeExerciseDispatch;
 
     this.navigation.setOptions({
       headerRight: () => (
@@ -75,6 +85,31 @@ class AddExerciseScreen extends React.Component {
     });
   }
 
+  getRightActions = (exerciseObj) => (dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [-10, 0],
+      outputRange: [50, 0],
+      extrapolate: 'clamp',
+    });
+    return (
+      <RectButton
+        style={styles.trashActionButton}
+        onPress={() => this.removeExerciseDispatch(exerciseObj)}
+      >
+        <AnimatedFeatherIcon
+          style={[
+            styles.trashIcon,
+            {
+              transform: [{ translateX: trans }],
+            },
+          ]}
+          name="trash-2"
+          size={32}
+        />
+      </RectButton>
+    );
+  };
+
   render() {
     const { date, exercises } = this.state;
     return (
@@ -87,21 +122,25 @@ class AddExerciseScreen extends React.Component {
             <Text style={styles.sectionHeader}>{section.key}</Text>
           )}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                this.navigation.navigate(
-                  'ExerciseScreen',
-                  {
-                    date,
-                    exercise: item,
-                  },
-                );
-              }}
+            <Swipeable
+              renderRightActions={this.getRightActions(item)}
             >
-              <View style={styles.exerciseName}>
-                <Text style={styles.exerciseNameText}>{item.name}</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.navigation.navigate(
+                    'ExerciseScreen',
+                    {
+                      date,
+                      exercise: item,
+                    },
+                  );
+                }}
+              >
+                <View style={styles.exerciseName}>
+                  <Text style={styles.exerciseNameText}>{item.name}</Text>
+                </View>
+              </TouchableOpacity>
+            </Swipeable>
           )}
           keyExtractor={(item, index) => (`${item}-${index}`)}
         />
@@ -117,6 +156,7 @@ AddExerciseScreen.propTypes = {
     }).isRequired,
   }).isRequired,
   exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
+  removeExerciseDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
@@ -126,4 +166,10 @@ const mapStateToProps = (state) => ({
   exercises: state.exercises,
 });
 
-export default connect(mapStateToProps)(AddExerciseScreen);
+const mapDispatchToProps = (dispatch) => ({
+  removeExerciseDispatch: (key) => {
+    dispatch(removeExerciseAction(key));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddExerciseScreen);

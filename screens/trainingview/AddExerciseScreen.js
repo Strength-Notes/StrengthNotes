@@ -6,10 +6,18 @@ import {
   Text,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
+  headerBarRightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  headerBarCreateExerciseButton: {
+    margin: 10,
+  },
   container: {
     flex: 1,
   },
@@ -36,10 +44,35 @@ class AddExerciseScreen extends React.Component {
 
     this.navigation = props.navigation;
 
+    this.navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.headerBarRightContainer}>
+          <TouchableOpacity
+            style={styles.headerBarCreateExerciseButton}
+            onPress={() => {
+              requestAnimationFrame(() => {
+                this.navigation.navigate('CreateExerciseScreen');
+              });
+            }}
+          >
+            <Icon name="plus" size={40} color="#999" />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+
     this.state = {
       date: props.route.params.date,
       exercises: props.exercises,
     };
+  }
+
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(newProps) {
+    this.setState({
+      date: newProps.route.params.date,
+      exercises: newProps.exercises,
+    });
   }
 
   render() {

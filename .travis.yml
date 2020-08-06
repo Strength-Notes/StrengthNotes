@@ -6,16 +6,17 @@ node_js:
 cache:
   directories:
     - ~/.npm
-  before_script:
-    - npm install -g npm@latest
-  script:
-    - npm ci
-  jobs:
-    include:
-      - stage: deploy
-        node_js: lts/*
-        script:
-          - npm ci
-          - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
-          - npx expo publish --non-interactive
+    - .jest
+before_script:
+  - npm install -g npm@latest
+script:
+  - npm ci
+jobs:
+  include:
+    - stage: deploy
+      node_js: lts/*
+      script:
+        - npm ci
+        - npx expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
+        - npx expo publish --non-interactive
 

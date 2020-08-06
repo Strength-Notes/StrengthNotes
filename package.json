@@ -68,7 +68,7 @@
     "eslint-plugin-react": "^7.20.2",
     "eslint-plugin-react-hooks": "^4.0.4",
     "husky": "^4.2.5",
-    "jest": "^26.2.2",
+    "jest": "latest",
     "jest-expo": "^38.0.0",
     "logkitty": "^0.7.1",
     "react-test-renderer": "^16.13.1",

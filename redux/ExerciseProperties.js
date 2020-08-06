@@ -3,6 +3,7 @@ const ExerciseProperties = {
   REPS: 'Reps',
   TIME: 'Time',
   DISTANCE: 'Distance',
+  NONE: 'None',
 };
 
 export default ExerciseProperties;

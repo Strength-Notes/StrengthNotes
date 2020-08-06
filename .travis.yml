@@ -6,12 +6,10 @@ node_js:
 cache:
   directories:
     - ~/.npm
-#   - .jest
   before_script:
     - npm install -g npm@latest
   script:
     - npm ci
-#   - npx jest --ci
   jobs:
     include:
       - stage: deploy

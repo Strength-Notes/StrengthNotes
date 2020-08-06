@@ -23,7 +23,8 @@
     ],
     "android": {
       "package": "com.strengthnotes.strengthnotes",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": []
     },
     "ios": {
       "bundleIdentifier": "com.strengthnotes.strengthnotes",

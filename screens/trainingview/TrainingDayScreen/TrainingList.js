@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { reorderSetsOfExerciseAction } from '../../../redux/actions';
 import { getSetsAtDate, getExercises, getSetsOfExercise } from '../../../redux/organizers';
 import ExerciseCard from './ExerciseCard';
 
@@ -25,6 +27,8 @@ class TrainingList extends React.Component {
     super(props);
 
     this.navigation = props.navigation;
+
+    this.reorderSetsOfExerciseDispatch = props.reorderSetsOfExerciseDispatch;
 
     const { sets, date, xPositionOffset } = props;
     this.state = {
@@ -71,7 +75,10 @@ class TrainingList extends React.Component {
             )
           }
           keyExtractor={(item) => `draggable-item-${item}`}
-          onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
+          onDragEnd={({ data }) => {
+            this.setState({ exerciseNamesToday: data });
+            this.reorderSetsOfExerciseDispatch(date, data);
+          }}
           activationDistance={5}
         />
       );
@@ -99,9 +106,16 @@ TrainingList.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
   date: PropTypes.string.isRequired,
   xPositionOffset: PropTypes.number.isRequired,
+  reorderSetsOfExerciseDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default TrainingList;
+const mapDispatchToProps = (dispatch) => ({
+  reorderSetsOfExerciseDispatch: (date, exerciseList) => {
+    dispatch(reorderSetsOfExerciseAction(date, exerciseList));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(TrainingList);

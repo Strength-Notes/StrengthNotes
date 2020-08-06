@@ -6,9 +6,11 @@ import {
   UPDATE_SET_COMMENT,
   REMOVE_SET,
   MOVE_SET,
+  REORDER_SETS_OF_EXERCISE,
   ADD_EXERCISE,
   REMOVE_EXERCISE,
 } from './actions';
+import { getSetsOfExercise } from './organizers';
 
 /**
  * @brief Finds the array index of the set matching the input key from
@@ -75,6 +77,20 @@ function setReducer(state = [{}], action) {
 
       newState[0][date] = arrayMove(newState[0][date], currentIndex, newIndex);
 
+      return newState;
+    }
+    case REORDER_SETS_OF_EXERCISE: {
+      const { date, exercisesList } = action.payload;
+
+      const setsToday = newState[0][date];
+      const newSets = [];
+
+      exercisesList.forEach((item) => {
+        const setsOfItem = getSetsOfExercise(setsToday, item);
+        newSets.push(...setsOfItem);
+      });
+
+      newState[0][date] = newSets;
       return newState;
     }
     case REHYDRATE: {

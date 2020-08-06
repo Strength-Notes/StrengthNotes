@@ -151,8 +151,18 @@ class ExerciseCard extends React.Component {
   }
 
   getSetRow = (setObj) => {
-    // eslint-disable-next-line react/destructuring-assignment
-    const { primary, secondary } = this.state.exercise;
+    let { exercise } = this.state;
+
+    // If undefined, give it defaults to prevent crashing
+    if (exercise === undefined) {
+      exercise = {
+        name: 'undefined',
+        primary: null,
+        secondary: null,
+      };
+    }
+
+    const { primary, secondary } = exercise;
 
     return (
       <View

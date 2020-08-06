@@ -13,10 +13,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  getFormattedDateString,
-  getDateObjectFromString,
-} from '../../../redux/organizers';
+import { getFormattedDateString, getDateObjectFromString } from '../../../redux/organizers';
 import TrainingList from './TrainingList';
 
 const styles = StyleSheet.create({

@@ -2,6 +2,7 @@ export const ADD_SET = 'ADD_SET';
 export const UPDATE_SET_COMMENT = 'UPDATE_SET_COMMENT';
 export const REMOVE_SET = 'REMOVE_SET';
 export const MOVE_SET = 'MOVE_SET';
+export const REORDER_SETS_OF_EXERCISE = 'REORDER_SETS_OF_EXERCISE';
 
 export const ADD_EXERCISE = 'ADD_EXERCISE';
 export const REMOVE_EXERCISE = 'REMOVE_EXERCISE';
@@ -29,6 +30,14 @@ export const moveSetAction = (set, distanceMoved) => ({
   payload: {
     set,
     distanceMoved,
+  },
+});
+
+export const reorderSetsOfExerciseAction = (date, exercisesList) => ({
+  type: REORDER_SETS_OF_EXERCISE,
+  payload: {
+    date,
+    exercisesList,
   },
 });
 

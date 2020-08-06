@@ -7,7 +7,7 @@
  * @param {Array} exerciseSets - Sets of various exercises to extract from
  * @param {String} dateString - The date string (in YYYY-MM-DD format) to filter for
  */
-export function getSetsAtDate(exerciseSets = [], dateString) {
+export function getSetsAtDate(exerciseSets = [{}], dateString) {
   let setsAtDate = exerciseSets[0][dateString];
 
   if (setsAtDate === undefined) {

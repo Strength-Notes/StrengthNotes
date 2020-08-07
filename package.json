@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint App.js screens redux",
+    "lint": "eslint App.js screens redux __tests__",
     "test": "jest"
   },
   "husky": {

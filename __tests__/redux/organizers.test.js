@@ -82,11 +82,11 @@ exerciseSets[0][date] = setsAtDate;
 
 describe('getSetsAtDate', () => {
   it('returns exercise sets at given date', () => {
-   expect(getSetsAtDate(exerciseSets, date)).toBe(setsAtDate);
+    expect(getSetsAtDate(exerciseSets, date)).toBe(setsAtDate);
   });
 
   it('returns an empty array if there are no sets at this date (input undef)', () => {
-   expect(getSetsAtDate(undefined, date)).toEqual([]);
+    expect(getSetsAtDate(undefined, date)).toEqual([]);
   });
 });
 

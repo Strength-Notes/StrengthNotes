@@ -57,7 +57,9 @@ function setReducer(state = [{}], action) {
 
       const setIndex = findSetInArrayByKey(newState[0][date], key);
 
-      newState[0][date][setIndex].comment = newComment;
+      if (setIndex !== -1) {
+        newState[0][date][setIndex].comment = newComment;
+      }
       return newState;
     }
     case REMOVE_SET: {

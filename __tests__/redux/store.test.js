@@ -115,7 +115,7 @@ describe('store.dispatch(addSetAction)', () => {
 });
 
 // ** Relise on previous test to ensure there's a set to update comment for **
-describe('store.dispatch(updateSetCommentAction)', () => { 
+describe('store.dispatch(updateSetCommentAction)', () => {
   it('successfully updates a set\'s comment', () => {
     const newComment = 'This is the new comment!';
 
@@ -126,7 +126,7 @@ describe('store.dispatch(updateSetCommentAction)', () => {
 
   it('has no effect if given a set that doesn\' exist in the store', () => {
     const wrongComment = 'This comment should not show up';
-    
+
     // Only one object in array now, so work with it
     const oldSetInStore = { ...store.getState().sets[0][date][0] };
 

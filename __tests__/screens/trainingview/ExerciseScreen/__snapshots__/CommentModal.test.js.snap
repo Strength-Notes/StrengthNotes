@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CommentModal /> returns the proper component 1`] = `
+<ReactNativeModal
+  animationIn="slideInUp"
+  animationInTiming={300}
+  animationOut="slideOutDown"
+  animationOutTiming={300}
+  animationType="fade"
+  avoidKeyboard={false}
+  backdropColor="black"
+  backdropOpacity={0.7}
+  backdropTransitionInTiming={300}
+  backdropTransitionOutTiming={300}
+  coverScreen={true}
+  customBackdrop={null}
+  deviceHeight={null}
+  deviceWidth={null}
+  hasBackdrop={true}
+  hideModalContentWhileAnimating={false}
+  isVisible={false}
+  onBackButtonPress={[Function]}
+  onBackdropPress={[Function]}
+  onModalHide={[Function]}
+  onModalShow={[Function]}
+  onModalWillHide={[Function]}
+  onModalWillShow={[Function]}
+  propagateSwipe={false}
+  scrollHorizontal={false}
+  scrollOffset={0}
+  scrollOffsetMax={0}
+  scrollTo={null}
+  supportedOrientations={
+    Array [
+      "portrait",
+      "landscape",
+    ]
+  }
+  swipeThreshold={100}
+  transparent={true}
+  useNativeDriver={false}
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "lightgray",
+          "borderRadius": 20,
+          "elevation": 5,
+          "margin": 20,
+          "padding": 15,
+          "shadowColor": "#000",
+          "shadowOffset": Object {
+            "height": 2,
+            "width": 0,
+          },
+          "shadowOpacity": 0.25,
+          "shadowRadius": 3.84,
+          "width": 637.5,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "fontWeight": "bold",
+          }
+        }
+      >
+        Comment
+      </Text>
+      <View
+        style={
+          Object {
+            "backgroundColor": "black",
+            "height": 0.5,
+            "width": 478.125,
+          }
+        }
+      />
+      <Component
+        allowFontScaling={true}
+        multiline={true}
+        placeholder="Enter set details here"
+        placeholderTextColor="gray"
+        rejectResponderTermination={true}
+        underlineColorAndroid="transparent"
+      />
+    </View>
+  </View>
+</ReactNativeModal>
+`;

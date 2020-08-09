@@ -2,9 +2,9 @@ import React from 'react';
 import {
   Text,
   TouchableOpacity,
-  Picker,
   TextInput,
   View,
+  Picker,
 } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';

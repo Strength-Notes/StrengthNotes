@@ -12,7 +12,7 @@ function renderForProperties(primary, secondary) {
   const tree = renderer.create(
     <Provider store={store}>
       <Footer
-        date={new Date('2020-08-08')}
+        date="2020-08-08"
         exercise={{
           name: 'Squat',
           primary,

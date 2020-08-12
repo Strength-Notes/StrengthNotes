@@ -11,6 +11,61 @@ import {
   REMOVE_EXERCISE,
 } from './actions';
 import { getSetsOfExercise } from './organizers';
+import ExerciseProperties from './ExerciseProperties';
+
+/**
+ * Default Exercises
+ */
+const squatExercise = {
+  name: 'Squat',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const benchExercise = {
+  name: 'Bench',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const deadliftExercise = {
+  name: 'Deadlift',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const cleanAndJerkExercise = {
+  name: 'Clean and Jerk',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.REPS,
+};
+
+const bodyweightPullupsExercise = {
+  name: 'Bodyweight Pullups',
+  primary: ExerciseProperties.REPS,
+};
+
+const dumbbellBenchTimeExercise = {
+  name: 'Dumbbell Bench (Time)',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.TIME,
+};
+
+const farmersCarryExercise = {
+  name: 'Farmer Carry',
+  primary: ExerciseProperties.WEIGHT,
+  secondary: ExerciseProperties.DISTANCE,
+};
+
+const initialExercisesState = [
+  squatExercise,
+  benchExercise,
+  deadliftExercise,
+  cleanAndJerkExercise,
+  bodyweightPullupsExercise,
+  dumbbellBenchTimeExercise,
+  farmersCarryExercise,
+];
 
 /**
  * @brief Finds the array index of the set matching the input key from
@@ -107,7 +162,7 @@ function setsReducer(state = [{}], action) {
   }
 }
 
-function exercisesReducer(state = [{ name: 'Bench', primary: 'Weight', secondary: 'Reps' }], action) {
+function exercisesReducer(state = initialExercisesState, action) {
   let newState = [...state];
 
   switch (action.type) {

@@ -110,14 +110,44 @@ class AddExerciseScreen extends React.Component {
     );
   };
 
+  getOrganizedExercisesForList = (exercises) => {
+    // Organize by exercise
+    const organizedExercises = {};
+
+    exercises.forEach((exercise) => {
+      let { category } = exercise;
+
+      // If it's undefined, it's now a Misc!
+      if (category === undefined) {
+        category = 'Misc';
+      }
+
+      if (organizedExercises[category] === undefined) {
+        organizedExercises[category] = [];
+      }
+
+      organizedExercises[category].push(exercise);
+    });
+
+    // Organize into sections data
+    const data = [];
+
+    Object.keys(organizedExercises).forEach((key) => {
+      data.push({
+        data: organizedExercises[key],
+        key,
+      });
+    });
+
+    return data;
+  };
+
   render() {
     const { date, exercises } = this.state;
     return (
       <View style={styles.container}>
         <SectionList
-          sections={[
-            { data: exercises, key: 'Exercises' },
-          ]}
+          sections={this.getOrganizedExercisesForList(exercises)}
           renderSectionHeader={({ section }) => (
             <Text style={styles.sectionHeader}>{section.key}</Text>
           )}

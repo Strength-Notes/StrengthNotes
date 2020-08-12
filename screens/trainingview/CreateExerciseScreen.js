@@ -49,10 +49,16 @@ class CreateExerciseScreen extends React.Component {
   };
 
   handleCreatePress = () => {
-    const { nameInput, primarySelected, secondarySelected } = this.state;
+    const {
+      nameInput,
+      categoryInput,
+      primarySelected,
+      secondarySelected,
+    } = this.state;
 
     this.addExerciseDispatch({
       name: nameInput,
+      category: categoryInput,
       primary: primarySelected,
       secondary: secondarySelected,
     });
@@ -61,7 +67,13 @@ class CreateExerciseScreen extends React.Component {
   };
 
   render() {
-    const { nameInput, primarySelected, secondarySelected } = this.state;
+    const {
+      nameInput,
+      categoryInput,
+      primarySelected,
+      secondarySelected,
+    } = this.state;
+
     const formValid = this.verifyInput();
 
     return (
@@ -73,6 +85,15 @@ class CreateExerciseScreen extends React.Component {
             }}
             value={nameInput}
             placeholder="Name"
+          />
+        </Card>
+        <Card title="Category">
+          <TextInput
+            onChangeText={(text) => {
+              this.setState({ categoryInput: text });
+            }}
+            value={categoryInput}
+            placeholder="Category"
           />
         </Card>
         <Card title="Primary">

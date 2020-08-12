@@ -18,41 +18,48 @@ import ExerciseProperties from './ExerciseProperties';
  */
 const squatExercise = {
   name: 'Squat',
+  category: 'Lower',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.REPS,
 };
 
 const benchExercise = {
   name: 'Bench',
+  category: 'Upper',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.REPS,
 };
 
 const deadliftExercise = {
   name: 'Deadlift',
+  category: 'Lower',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.REPS,
 };
 
 const cleanAndJerkExercise = {
   name: 'Clean and Jerk',
+  category: 'Lower',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.REPS,
 };
 
 const bodyweightPullupsExercise = {
   name: 'Bodyweight Pullups',
+  category: 'Upper',
   primary: ExerciseProperties.REPS,
 };
 
 const dumbbellBenchTimeExercise = {
   name: 'Dumbbell Bench (Time)',
+  category: 'Upper',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.TIME,
 };
 
 const farmersCarryExercise = {
   name: 'Farmer Carry',
+  category: 'Upper',
   primary: ExerciseProperties.WEIGHT,
   secondary: ExerciseProperties.DISTANCE,
 };

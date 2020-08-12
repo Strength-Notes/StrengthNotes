@@ -12,6 +12,11 @@ import ExerciseProperties from '../../../redux/ExerciseProperties';
 import { shapeOfSetObject } from '../../../redux/store';
 import { getExerciseObjectFromName } from '../../../redux/organizers';
 
+const SelectEvent = {
+  SELECTED: 'SELECTED',
+  UNSELECTED: 'UNSELECTED',
+};
+
 const styles = StyleSheet.create({
   exerciseName: {
     textAlign: 'left',
@@ -52,6 +57,8 @@ class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
 
+    const { onSelectEvent } = props;
+
     this.name = props.name; // Exercise name
     this.drag = props.drag; // Drag function (for draggable list)
     this.navigation = props.navigation;
@@ -63,6 +70,7 @@ class ExerciseCard extends React.Component {
       sets: props.sets,
       isSelected: false,
       exercise,
+      onSelectEvent,
     };
   }
 
@@ -99,11 +107,13 @@ class ExerciseCard extends React.Component {
   }
 
   toggleSelected() {
-    const { isSelected } = this.state;
+    const { isSelected, onSelectEvent } = this.state;
 
     this.setState({
       isSelected: !isSelected,
     });
+
+    onSelectEvent(isSelected ? SelectEvent.UNSELECTED : SelectEvent.SELECTED);
   }
 
   // For whatever bizarre reason, an error occurs when making this an arrow func
@@ -224,10 +234,16 @@ ExerciseCard.propTypes = {
   }).isRequired,
   date: PropTypes.string.isRequired,
   exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSelectEvent: PropTypes.func,
+};
+
+ExerciseCard.defaultProps = {
+  onSelectEvent: () => {},
 };
 
 const mapStateToProps = (state) => ({
   exercises: state.exercises,
 });
 
+export { SelectEvent };
 export default connect(mapStateToProps)(ExerciseCard);

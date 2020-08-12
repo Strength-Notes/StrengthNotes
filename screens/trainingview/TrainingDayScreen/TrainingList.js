@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { reorderSetsOfExerciseAction } from '../../../redux/actions';
 import { getSetsAtDate, getExercises, getSetsOfExercise } from '../../../redux/organizers';
-import ExerciseCard from './ExerciseCard';
+import ExerciseCard, { SelectEvent } from './ExerciseCard';
 
 const styles = StyleSheet.create({
   emptyDayView: {
@@ -30,11 +30,18 @@ class TrainingList extends React.Component {
 
     this.reorderSetsOfExerciseDispatch = props.reorderSetsOfExerciseDispatch;
 
-    const { sets, date, xPositionOffset } = props;
+    const {
+      sets,
+      date,
+      xPositionOffset,
+      updateNavigationHeader,
+    } = props;
     this.state = {
       sets,
       date,
       xPositionOffset,
+      updateNavigationHeader,
+      selectedExerciseNames: [],
     };
   }
 
@@ -49,11 +56,21 @@ class TrainingList extends React.Component {
   }
 
   render() {
-    const { sets, date, xPositionOffset } = this.state;
+    const {
+      sets,
+      date,
+      xPositionOffset,
+      selectedExerciseNames,
+      updateNavigationHeader,
+    } = this.state;
     let { exerciseNamesToday } = this.state;
-    const setsToday = getSetsAtDate(sets, date);
+
+    const setsAtDate = getSetsAtDate(sets, date);
+
+    updateNavigationHeader(selectedExerciseNames, setsAtDate);
+
     if (!exerciseNamesToday) {
-      exerciseNamesToday = getExercises(setsToday);
+      exerciseNamesToday = getExercises(setsAtDate);
     }
 
     const { width, height } = Dimensions.get('window');
@@ -67,10 +84,31 @@ class TrainingList extends React.Component {
             ({ item, drag }) => (
               <ExerciseCard
                 name={item}
-                sets={getSetsOfExercise(setsToday, item)}
+                sets={getSetsOfExercise(setsAtDate, item)}
                 drag={drag}
                 navigation={this.navigation}
                 date={date}
+                onSelectEvent={(type) => {
+                  switch (type) {
+                    case SelectEvent.SELECTED: {
+                      selectedExerciseNames.push(item);
+                      this.setState({
+                        selectedExerciseNames,
+                      });
+                      break;
+                    }
+                    case SelectEvent.UNSELECTED: {
+                      selectedExerciseNames.pop(item);
+                      this.setState({
+                        selectedExerciseNames,
+                      });
+                      break;
+                    }
+                    default: {
+                      // Do nothing
+                    }
+                  }
+                }}
               />
             )
           }
@@ -107,9 +145,14 @@ TrainingList.propTypes = {
   date: PropTypes.string.isRequired,
   xPositionOffset: PropTypes.number.isRequired,
   reorderSetsOfExerciseDispatch: PropTypes.func.isRequired,
+  updateNavigationHeader: PropTypes.func,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+};
+
+TrainingList.defaultProps = {
+  updateNavigationHeader: () => {},
 };
 
 const mapDispatchToProps = (dispatch) => ({

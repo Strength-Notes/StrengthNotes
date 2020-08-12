@@ -3,17 +3,20 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Feather';
+// eslint-disable-next-line import/no-named-default
+import { default as AntIcon } from 'react-native-vector-icons/AntDesign';
 // eslint-disable-next-line import/no-named-default
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getFormattedDateString, getDateObjectFromString } from '../../../redux/organizers';
+import { removeSetAction } from '../../../redux/actions';
+import { getFormattedDateString, getDateObjectFromString, getSetsOfExercise } from '../../../redux/organizers';
 import TrainingList from './TrainingList';
 
 const styles = StyleSheet.create({
@@ -64,47 +67,12 @@ class TrainingDayScreen extends React.Component {
 
     this.navigation = props.navigation;
 
+    this.removeSetDispatch = props.removeSetDispatch;
+
     this.state = {
       date: props.route.params.date,
       sets: props.sets,
     };
-
-    this.navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.headerBarRightContainer}>
-          <TouchableOpacity
-            style={styles.headerBarAddExerciseButton}
-            onPress={() => {
-              requestAnimationFrame(() => {
-                this.navigation.navigate(
-                  'AddExerciseScreen',
-                  { date: this.state.date }, // eslint-disable-line react/destructuring-assignment
-                );
-              });
-            }}
-          >
-            <Icon name="plus" size={40} color="#999" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.headerBarCalendarButton}
-            onPress={() => {
-              requestAnimationFrame(() => {
-                this.navigation.navigate(
-                  'TrainingCalendar',
-                  // eslint-disable-next-line react/destructuring-assignment
-                  { selectedDate: this.state.date },
-                );
-              });
-            }}
-          >
-            <MaterialIcon
-              name="calendar-month-outline"
-              size={40}
-            />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
 
     this.translateX = new Value(0);
     const offsetX = new Value(0);
@@ -197,7 +165,7 @@ class TrainingDayScreen extends React.Component {
 
             this.translateX.setValue(0);
 
-            this.setState({
+            this.navigation.setParams({
               date: this.shiftDateString(date, isLeft ? -1 : 1),
             });
           }, 0);
@@ -205,6 +173,71 @@ class TrainingDayScreen extends React.Component {
       );
     }
   }
+
+  updateNavigationHeader = (selectedExerciseNames, setsAtDate) => {
+    if (selectedExerciseNames.length > 0) {
+      this.navigation.setOptions({
+        headerRight: () => (
+          <View style={styles.headerBarRightContainer}>
+            <TouchableOpacity
+              style={styles.headerBarAddExerciseButton}
+              onPress={() => {
+                selectedExerciseNames.forEach((name) => {
+                  const setsList = getSetsOfExercise(setsAtDate, name);
+
+                  setsList.forEach((setItem) => {
+                    this.removeSetDispatch(setItem);
+                  });
+                });
+                // Clear the array
+                // eslint-disable-next-line no-param-reassign
+                selectedExerciseNames.length = 0;
+              }}
+            >
+              <Icon name="trash-2" size={40} color="red" />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    } else {
+      this.navigation.setOptions({
+        headerRight: () => (
+          <View style={styles.headerBarRightContainer}>
+            <TouchableOpacity
+              style={styles.headerBarAddExerciseButton}
+              onPress={() => {
+                requestAnimationFrame(() => {
+                  this.navigation.navigate(
+                    'AddExerciseScreen',
+                    { date: this.state.date }, // eslint-disable-line react/destructuring-assignment
+                  );
+                });
+              }}
+            >
+              <AntIcon name="plus" size={40} color="#999" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.headerBarCalendarButton}
+              onPress={() => {
+                requestAnimationFrame(() => {
+                  this.navigation.navigate(
+                    'TrainingCalendar',
+                    // eslint-disable-next-line react/destructuring-assignment
+                    { selectedDate: this.state.date },
+                  );
+                });
+              }}
+            >
+              <MaterialIcon
+                name="calendar-month-outline"
+                size={40}
+              />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    }
+  };
 
   render() {
     const { date, sets } = this.state;
@@ -238,6 +271,7 @@ class TrainingDayScreen extends React.Component {
                 sets={sets}
                 date={date}
                 xPositionOffset={0}
+                updateNavigationHeader={this.updateNavigationHeader}
               />
             </View>
             <TrainingList
@@ -260,13 +294,20 @@ TrainingDayScreen.propTypes = {
       date: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  removeSetDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
 };
 
+const mapDispatchToProps = (dispatch) => ({
+  removeSetDispatch: (setObj) => {
+    dispatch(removeSetAction(setObj));
+  },
+});
+
 const mapStateToProps = (state) => ({
   sets: state.sets,
 });
 
-export default connect(mapStateToProps)(TrainingDayScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(TrainingDayScreen);

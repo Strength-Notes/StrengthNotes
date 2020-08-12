@@ -38,7 +38,7 @@ function findExerciseInArrayByName(exercisesArray, name) {
   return -1; // Not found...
 }
 
-function setReducer(state = [{}], action) {
+function setsReducer(state = [{}], action) {
   const newState = [...state];
 
   switch (action.type) {
@@ -137,7 +137,7 @@ function exercisesReducer(state = [{ name: 'Bench', primary: 'Weight', secondary
 }
 
 const rootReducer = combineReducers({
-  sets: setReducer,
+  sets: setsReducer,
   exercises: exercisesReducer,
 });
 

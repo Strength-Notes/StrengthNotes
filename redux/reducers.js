@@ -96,7 +96,9 @@ function setReducer(state = [{}], action) {
       return newState;
     }
     case REHYDRATE: {
-      [newState[0]] = action.payload.sets;
+      if (action.payload) {
+        [newState[0]] = action.payload.sets;
+      }
       return newState;
     }
     default: {
@@ -123,7 +125,9 @@ function exercisesReducer(state = [{ name: 'Bench', primary: 'Weight', secondary
       return newState;
     }
     case REHYDRATE: {
-      newState = action.payload.exercises;
+      if (action.payload) {
+        newState = action.payload.exercises;
+      }
       return newState;
     }
     default: {

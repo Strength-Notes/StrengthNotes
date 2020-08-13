@@ -27,7 +27,7 @@ import {
 } from '../../../redux/actions';
 import CommentModal from './CommentModal';
 import Footer from './Footer';
-import styles from './styles';
+import styles from './EntryTab.styles';
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 

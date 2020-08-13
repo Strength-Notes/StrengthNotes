@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ExerciseProperties from '../../../redux/ExerciseProperties';
 import { addSetAction } from '../../../redux/actions';
-import styles from './styles';
+import styles from './EntryTab.styles';
 
 class Footer extends React.Component {
   constructor(props) {

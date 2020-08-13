@@ -93,10 +93,7 @@ class ExerciseCard extends React.Component {
       requestAnimationFrame(() => {
         this.navigation.navigate(
           'ExerciseScreen',
-          {
-            date: this.date,
-            exerciseString: this.name,
-          },
+          { date: this.date, exerciseString: this.name },
         );
       });
     }

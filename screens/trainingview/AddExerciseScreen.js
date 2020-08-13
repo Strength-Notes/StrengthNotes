@@ -159,10 +159,7 @@ class AddExerciseScreen extends React.Component {
                 onPress={() => {
                   this.navigation.navigate(
                     'ExerciseScreen',
-                    {
-                      date,
-                      exercise: item,
-                    },
+                    { date, exercise: item },
                   );
                 }}
               >

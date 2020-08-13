@@ -4,6 +4,7 @@ import {
   Dimensions,
   Text,
   View,
+  BackHandler,
 } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import PropTypes from 'prop-types';
@@ -36,6 +37,7 @@ class TrainingList extends React.Component {
       xPositionOffset,
       updateNavigationHeader,
     } = props;
+
     this.state = {
       sets,
       date,
@@ -43,6 +45,16 @@ class TrainingList extends React.Component {
       updateNavigationHeader,
       selectedExerciseNames: [],
     };
+
+    const onBackPress = () => {
+      if (this.isInSelectionMode()) {
+        this.clearSelection();
+        return true;
+      }
+      return false;
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
   }
 
   // eslint-disable-next-line camelcase
@@ -54,6 +66,24 @@ class TrainingList extends React.Component {
       xPositionOffset,
     });
   }
+
+  isInSelectionMode = () => {
+    const { selectedExerciseNames } = this.state;
+    return selectedExerciseNames.length > 0;
+  };
+
+  isSelected = (exerciseName) => {
+    const { selectedExerciseNames } = this.state;
+    return selectedExerciseNames.indexOf(exerciseName) !== -1;
+  }
+
+  clearSelection = () => {
+    const { selectedExerciseNames } = this.state;
+    selectedExerciseNames.length = 0;
+    this.setState({
+      selectedExerciseNames,
+    });
+  };
 
   render() {
     const {
@@ -98,7 +128,11 @@ class TrainingList extends React.Component {
                       break;
                     }
                     case SelectEvent.UNSELECTED: {
-                      selectedExerciseNames.pop(item);
+                      // Remove from array
+                      const index = selectedExerciseNames.indexOf(item);
+                      if (index > -1) {
+                        selectedExerciseNames.splice(index, 1);
+                      }
                       this.setState({
                         selectedExerciseNames,
                       });
@@ -109,7 +143,8 @@ class TrainingList extends React.Component {
                     }
                   }
                 }}
-                isInSelectionMode={selectedExerciseNames.length > 0}
+                isInSelectionMode={this.isInSelectionMode()}
+                isSelected={this.isSelected(item)}
               />
             )
           }

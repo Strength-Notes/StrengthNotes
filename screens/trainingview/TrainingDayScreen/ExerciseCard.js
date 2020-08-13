@@ -57,7 +57,7 @@ class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
 
-    const { onSelectEvent, isInSelectionMode } = props;
+    const { onSelectEvent, isInSelectionMode, isSelected } = props;
 
     this.name = props.name; // Exercise name
     this.drag = props.drag; // Drag function (for draggable list)
@@ -68,26 +68,27 @@ class ExerciseCard extends React.Component {
 
     this.state = {
       sets: props.sets,
-      isSelected: false,
       exercise,
       onSelectEvent,
       isInSelectionMode,
+      isSelected,
     };
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
-    const { isInSelectionMode } = nextProps;
+    const { isInSelectionMode, isSelected } = nextProps;
 
     this.setState({
       sets: nextProps.sets,
       isInSelectionMode,
+      isSelected,
     });
   }
 
   handlePress() { // eslint-disable-line
-    const { isInSelectionMode } = this.state;
+    const { isInSelectionMode, isSelected, onSelectEvent } = this.state;
     if (isInSelectionMode) {
-      this.toggleSelected();
+      onSelectEvent(isSelected ? SelectEvent.UNSELECTED : SelectEvent.SELECTED);
     } else {
       // Run in animation frame for improved performance
       requestAnimationFrame(() => {
@@ -100,22 +101,12 @@ class ExerciseCard extends React.Component {
   }
 
   handleLongPress() {
-    const { isInSelectionMode } = this.state;
+    const { isInSelectionMode, onSelectEvent } = this.state;
     if (isInSelectionMode) {
       this.drag();
-    } else {
-      this.toggleSelected();
+    } else { // Select it
+      onSelectEvent(SelectEvent.SELECTED);
     }
-  }
-
-  toggleSelected() {
-    const { isSelected, onSelectEvent } = this.state;
-
-    this.setState({
-      isSelected: !isSelected,
-    });
-
-    onSelectEvent(isSelected ? SelectEvent.UNSELECTED : SelectEvent.SELECTED);
   }
 
   // For whatever bizarre reason, an error occurs when making this an arrow func
@@ -238,11 +229,13 @@ ExerciseCard.propTypes = {
   exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSelectEvent: PropTypes.func,
   isInSelectionMode: PropTypes.bool,
+  isSelected: PropTypes.bool,
 };
 
 ExerciseCard.defaultProps = {
   onSelectEvent: () => {},
   isInSelectionMode: false,
+  isSelected: false,
 };
 
 const mapStateToProps = (state) => ({

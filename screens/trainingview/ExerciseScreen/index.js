@@ -1,5 +1,10 @@
 import React from 'react';
-import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+  View,
+} from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PropTypes from 'prop-types';
 import EntryTab from './EntryTab';
@@ -27,6 +32,10 @@ const ExerciseScreen = ({ route }) => (
     backBehavior="none"
     lazy
     lazyPlaceholder={lazyPlaceholder}
+    initialLayout={{
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+    }}
   >
     <Tab.Screen
       name="EntryTab"

@@ -57,16 +57,21 @@ class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
 
-    const { onSelectEvent, isInSelectionMode, isSelected } = props;
+    const {
+      onSelectEvent,
+      isInSelectionMode,
+      isSelected,
+      date,
+    } = props;
 
     this.name = props.name; // Exercise name
     this.drag = props.drag; // Drag function (for draggable list)
     this.navigation = props.navigation;
-    this.date = props.date; // Needed for navigation to ExerciseScreen
 
     const exercise = getExerciseObjectFromName(props.exercises, this.name);
 
     this.state = {
+      date,
       sets: props.sets,
       exercise,
       onSelectEvent,
@@ -76,9 +81,10 @@ class ExerciseCard extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
-    const { isInSelectionMode, isSelected } = nextProps;
+    const { isInSelectionMode, isSelected, date } = nextProps;
 
     this.setState({
+      date,
       sets: nextProps.sets,
       isInSelectionMode,
       isSelected,
@@ -86,7 +92,12 @@ class ExerciseCard extends React.Component {
   }
 
   handlePress() { // eslint-disable-line
-    const { isInSelectionMode, isSelected, onSelectEvent } = this.state;
+    const {
+      isInSelectionMode,
+      isSelected,
+      onSelectEvent,
+      date,
+    } = this.state;
     if (isInSelectionMode) {
       onSelectEvent(isSelected ? SelectEvent.UNSELECTED : SelectEvent.SELECTED);
     } else {
@@ -94,7 +105,7 @@ class ExerciseCard extends React.Component {
       requestAnimationFrame(() => {
         this.navigation.navigate(
           'ExerciseScreen',
-          { date: this.date, exerciseString: this.name },
+          { date, exerciseString: this.name },
         );
       });
     }

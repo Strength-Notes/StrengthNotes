@@ -16,7 +16,9 @@ import {
   getFormattedDateString,
   getExerciseObjectFromName,
 } from '../../../redux/organizers';
+import { updateSetCommentAction } from '../../../redux/actions';
 import ExerciseProperties from '../../../redux/ExerciseProperties';
+import CommentModal from './CommentModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -73,6 +75,8 @@ const styles = StyleSheet.create({
 class HistoryTab extends React.Component {
   constructor(props) {
     super(props);
+
+    this.updateSetCommentDispatch = props.updateSetCommentDispatch;
 
     const { sets, exercises, route } = props;
     let { exercise, exerciseString } = route.params;
@@ -169,6 +173,19 @@ class HistoryTab extends React.Component {
     }
   }
 
+  openCommentModal = (setObj) => () => {
+    this.setState({
+      commentModalVisible: true,
+      commentModalSet: setObj,
+    });
+  }
+
+  closeCommentModal = () => {
+    this.setState({
+      commentModalVisible: false,
+    });
+  }
+
   getSetRow = ({ setObj }) => {
     // eslint-disable-next-line react/destructuring-assignment
     const { primary, secondary } = this.state.exercise;
@@ -178,7 +195,7 @@ class HistoryTab extends React.Component {
       <View style={styles.setRow}>
         <TouchableOpacity
           style={styles.setCommentButton}
-          onPress={() => {}}
+          onPress={this.openCommentModal(setObj)}
         >
           <Icon
             name={comment ? 'chat' : 'chat-bubble-outline'}
@@ -225,13 +242,28 @@ class HistoryTab extends React.Component {
   };
 
   render() {
-    const { date, sets, exerciseString } = this.state;
+    const {
+      date,
+      sets,
+      exerciseString,
+      commentModalVisible,
+      commentModalSet,
+    } = this.state;
 
     const sectionsData = this.getSections(sets, exerciseString);
 
     if (sectionsData.length > 0) {
       return (
         <View style={styles.container}>
+          <CommentModal
+            comment={commentModalSet ? commentModalSet.comment : ''}
+            onChangeComment={(newComment) => {
+              this.updateSetCommentDispatch(commentModalSet, newComment);
+            }}
+            modalVisible={commentModalVisible || false}
+            closeModal={this.closeCommentModal}
+          />
+
           <SectionList
             sections={this.getSections(sets, exerciseString)}
             renderSectionHeader={({ section }) => (
@@ -272,6 +304,7 @@ HistoryTab.propTypes = {
       }),
     }),
   }).isRequired,
+  updateSetCommentDispatch: PropTypes.func.isRequired,
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
   exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
@@ -281,4 +314,10 @@ const mapStateToProps = ({ sets, exercises }) => ({
   exercises,
 });
 
-export default connect(mapStateToProps)(HistoryTab);
+const mapDispatchToProps = (dispatch) => ({
+  updateSetCommentDispatch: (set, newComment) => {
+    dispatch(updateSetCommentAction(set, newComment));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryTab);

@@ -1,13 +1,33 @@
 import React from 'react';
+import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PropTypes from 'prop-types';
 import EntryTab from './EntryTab';
 import HistoryTab from './HistoryTab';
 
+const styles = StyleSheet.create({
+  lazyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+});
+
 const Tab = createMaterialTopTabNavigator();
 
+const lazyPlaceholder = () => (
+  <View style={styles.lazyContainer}>
+    <ActivityIndicator
+      size="large"
+    />
+  </View>
+);
+
 const ExerciseScreen = ({ route }) => (
-  <Tab.Navigator>
+  <Tab.Navigator
+    backBehavior="none"
+    lazy
+    lazyPlaceholder={lazyPlaceholder}
+  >
     <Tab.Screen
       name="EntryTab"
       component={EntryTab}

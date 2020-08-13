@@ -109,6 +109,7 @@ class TrainingList extends React.Component {
                     }
                   }
                 }}
+                isInSelectionMode={selectedExerciseNames.length > 0}
               />
             )
           }

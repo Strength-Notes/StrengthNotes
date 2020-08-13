@@ -57,7 +57,7 @@ class ExerciseCard extends React.Component {
   constructor(props) {
     super(props);
 
-    const { onSelectEvent } = props;
+    const { onSelectEvent, isInSelectionMode } = props;
 
     this.name = props.name; // Exercise name
     this.drag = props.drag; // Drag function (for draggable list)
@@ -71,18 +71,22 @@ class ExerciseCard extends React.Component {
       isSelected: false,
       exercise,
       onSelectEvent,
+      isInSelectionMode,
     };
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
+    const { isInSelectionMode } = nextProps;
+
     this.setState({
       sets: nextProps.sets,
+      isInSelectionMode,
     });
   }
 
   handlePress() { // eslint-disable-line
-    const { isSelected } = this.state;
-    if (isSelected) {
+    const { isInSelectionMode } = this.state;
+    if (isInSelectionMode) {
       this.toggleSelected();
     } else {
       // Run in animation frame for improved performance
@@ -99,11 +103,12 @@ class ExerciseCard extends React.Component {
   }
 
   handleLongPress() {
-    const { isSelected } = this.state;
-    if (isSelected) {
+    const { isInSelectionMode } = this.state;
+    if (isInSelectionMode) {
       this.drag();
+    } else {
+      this.toggleSelected();
     }
-    this.toggleSelected();
   }
 
   toggleSelected() {
@@ -235,10 +240,12 @@ ExerciseCard.propTypes = {
   date: PropTypes.string.isRequired,
   exercises: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSelectEvent: PropTypes.func,
+  isInSelectionMode: PropTypes.bool,
 };
 
 ExerciseCard.defaultProps = {
   onSelectEvent: () => {},
+  isInSelectionMode: false,
 };
 
 const mapStateToProps = (state) => ({

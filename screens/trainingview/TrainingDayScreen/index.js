@@ -3,11 +3,9 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import Animated, { Easing } from 'react-native-reanimated';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 // eslint-disable-next-line import/no-named-default
 import { default as AntIcon } from 'react-native-vector-icons/AntDesign';
@@ -49,19 +47,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const {
-  set,
-  cond,
-  block,
-  eq,
-  add,
-  multiply,
-  Value,
-  event,
-  call,
-} = Animated;
-
 class TrainingDayScreen extends React.Component {
+  Tab = createMaterialTopTabNavigator();
+
   constructor(props) {
     super(props);
 
@@ -73,22 +61,6 @@ class TrainingDayScreen extends React.Component {
       date: props.route.params.date,
       sets: props.sets,
     };
-
-    this.translateX = new Value(0);
-    const offsetX = new Value(0);
-
-    this.onPanGestureEvent = event([
-      {
-        nativeEvent: ({ translationX: x, state }) => (
-          block([
-            set(this.translateX, multiply(add(x, offsetX), 1.3)),
-            cond(eq(state, State.END), [
-              call([multiply(add(x, offsetX), 1.3)], this.onSwipeEnd),
-            ]),
-          ])
-        ),
-      },
-    ]);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
@@ -137,41 +109,6 @@ class TrainingDayScreen extends React.Component {
     // Use date.getUTCDate() to avoid weird bugs around midnight
     const prettyDate = `${d[0]} ${d[1]} ${date.getUTCDate()} ${d[3]}`;
     return prettyDate;
-  }
-
-  onSwipeEnd = ([xDistance]) => {
-    const { width } = Dimensions.get('window');
-    const xThreshold = width / 2;
-
-    const isLeft = xDistance > 0;
-
-    if ((isLeft && xDistance < xThreshold)
-      || (!isLeft && xDistance > -xThreshold)) {
-      // Didn't cross the activation point to change screens
-      Animated.timing(this.translateX, {
-        toValue: 0,
-        duration: 100,
-        easing: Easing.inOut(Easing.ease),
-      }).start();
-    } else { // Switch screens
-      Animated.timing(this.translateX, {
-        toValue: isLeft ? width : -width,
-        duration: 100,
-        easing: Easing.inOut(Easing.ease),
-      }).start(
-        () => {
-          setTimeout(() => {
-            const { date } = this.state;
-
-            this.translateX.setValue(0);
-
-            this.navigation.setParams({
-              date: this.shiftDateString(date, isLeft ? -1 : 1),
-            });
-          }, 0);
-        },
-      );
-    }
   }
 
   updateNavigationHeader = (selectedExerciseNames, setsAtDate) => {
@@ -239,50 +176,49 @@ class TrainingDayScreen extends React.Component {
     }
   };
 
-  render() {
+  renderTab = (dateParam) => () => {
     const { date, sets } = this.state;
 
-    const { width } = Dimensions.get('window');
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={styles.dateHeaderContainer}>
+          <Text style={styles.dateHeader}>{this.prettifyDateString(dateParam)}</Text>
+        </View>
+        <TrainingList
+          navigation={this.navigation}
+          sets={sets}
+          date={dateParam}
+          xPositionOffset={0}
+          updateNavigationHeader={dateParam === date ? this.updateNavigationHeader : undefined}
+        />
+      </View>
+    );
+  };
 
-    const yesterday = this.shiftDateString(date, -1);
-    const tomorrow = this.shiftDateString(date, 1);
+  render() {
+    const { date } = this.state;
+
+    const tabsToRender = [];
+    for (let i = -10; i <= 10; i += 1) {
+      const newDate = this.shiftDateString(date, i); 
+      tabsToRender.push(
+        <this.Tab.Screen
+          name={`TrainingDay-${newDate}`}
+          component={this.renderTab(newDate)}
+          key={newDate}
+        />,
+      );
+    }
 
     return (
-      <View style={styles.container}>
-        <View style={styles.dateHeaderContainer}>
-          <Text style={styles.dateHeader}>{this.prettifyDateString(date)}</Text>
-        </View>
-        <PanGestureHandler
-          onGestureEvent={this.onPanGestureEvent}
-          onHandlerStateChange={this.onPanGestureEvent}
-        >
-          <Animated.View
-            style={[{ transform: [{ translateX: this.translateX }] }, { flex: 1, flexDirection: 'row' }]}
-          >
-            <TrainingList
-              navigation={this.navigation}
-              sets={sets}
-              date={yesterday}
-              xPositionOffset={-width}
-            />
-            <View>
-              <TrainingList
-                navigation={this.navigation}
-                sets={sets}
-                date={date}
-                xPositionOffset={0}
-                updateNavigationHeader={this.updateNavigationHeader}
-              />
-            </View>
-            <TrainingList
-              navigation={this.navigation}
-              sets={sets}
-              date={tomorrow}
-              xPositionOffset={0}
-            />
-          </Animated.View>
-        </PanGestureHandler>
-      </View>
+      <this.Tab.Navigator
+        style={styles.container}
+        lazy
+        lazyPreloadDistance={5}
+        initialRouteName={`TrainingDay-${date}`}
+      >
+        {tabsToRender}
+      </this.Tab.Navigator>
     );
   }
 }

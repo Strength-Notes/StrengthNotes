@@ -172,6 +172,7 @@ class TrainingDayScreen extends React.Component {
           }, 0);
         },
       );
+      this.clearCenterSelection();
     }
   }
 
@@ -273,6 +274,7 @@ class TrainingDayScreen extends React.Component {
                 date={date}
                 xPositionOffset={0}
                 updateNavigationHeader={this.updateNavigationHeader}
+                clearSelection={(clearSelection) => { this.clearCenterSelection = clearSelection; }}
               />
             </View>
             <TrainingList

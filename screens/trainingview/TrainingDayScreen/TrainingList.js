@@ -36,7 +36,10 @@ class TrainingList extends React.Component {
       date,
       xPositionOffset,
       updateNavigationHeader,
+      clearSelection,
     } = props;
+
+    clearSelection(this.clearSelection);
 
     this.state = {
       sets,
@@ -185,10 +188,12 @@ TrainingList.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  clearSelection: PropTypes.func,
 };
 
 TrainingList.defaultProps = {
   updateNavigationHeader: () => {},
+  clearSelection: () => {},
 };
 
 const mapDispatchToProps = (dispatch) => ({

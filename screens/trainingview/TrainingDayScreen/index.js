@@ -79,11 +79,11 @@ class TrainingDayScreen extends React.Component {
 
     this.onPanGestureEvent = event([
       {
-        nativeEvent: ({ translationX: x, state }) => (
+        nativeEvent: ({ translationX: x, velocityX, state }) => (
           block([
             set(this.translateX, multiply(add(x, offsetX), 1.3)),
             cond(eq(state, State.END), [
-              call([multiply(add(x, offsetX), 1.3)], this.onSwipeEnd),
+              call([multiply(add(x, offsetX), 1.3), add(velocityX, 0)], this.onSwipeEnd),
             ]),
           ])
         ),
@@ -139,14 +139,15 @@ class TrainingDayScreen extends React.Component {
     return prettyDate;
   }
 
-  onSwipeEnd = ([xDistance]) => {
+  onSwipeEnd = ([xDistance, velocityX]) => {
+    const velocityThreshold = 1000;
     const { width } = Dimensions.get('window');
     const xThreshold = width / 2;
 
     const isLeft = xDistance > 0;
 
-    if ((isLeft && xDistance < xThreshold)
-      || (!isLeft && xDistance > -xThreshold)) {
+    if ((isLeft && xDistance < xThreshold && velocityX < velocityThreshold)
+      || (!isLeft && xDistance > -xThreshold && velocityX > -velocityThreshold)) {
       // Didn't cross the activation point to change screens
       Animated.timing(this.translateX, {
         toValue: 0,

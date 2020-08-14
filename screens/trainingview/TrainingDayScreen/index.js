@@ -200,7 +200,7 @@ class TrainingDayScreen extends React.Component {
 
     const tabsToRender = [];
     for (let i = -10; i <= 10; i += 1) {
-      const newDate = this.shiftDateString(date, i); 
+      const newDate = this.shiftDateString(date, i);
       tabsToRender.push(
         <this.Tab.Screen
           name={`TrainingDay-${newDate}`}

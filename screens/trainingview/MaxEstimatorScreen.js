@@ -156,7 +156,10 @@ class MaxEstimatorScreen extends React.Component {
         <ScrollView style={styles.scrollContainer}>
           {
             Object.keys(maxPercentages).map((repCount) => (
-              <View style={styles.rowContainer}>
+              <View
+                key={repCount}
+                style={styles.rowContainer}
+              >
                 <Text style={styles.rowRepsLabel}>{repCount}RM</Text>
                 <Text style={styles.rowWeightLabel}>
                   {

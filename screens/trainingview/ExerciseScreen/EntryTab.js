@@ -245,9 +245,8 @@ class EntryTab extends React.Component {
             const distanceMoved = to - from;
             this.moveSetDispatch(set, distanceMoved);
           }}
+          activationDistance={15}
         />
-
-        <View style={{ flex: 1 }} />
 
         <Footer
           date={date}

@@ -19,12 +19,32 @@ class Footer extends React.Component {
     this.addSetDispatch = props.addSetDispatch;
 
     const { date, exercise } = props;
+    const { primary, secondary } = exercise;
 
     this.state = {
       date,
       exercise,
+      ...this.getDefaultInputState(primary, secondary),
     };
   }
+
+  getDefaultInputState = (primary, secondary) => {
+    const stateFields = {};
+
+    if (primary === ExerciseProperties.WEIGHT || secondary === ExerciseProperties.WEIGHT) {
+      stateFields.weightInput = '';
+    }
+    if (primary === ExerciseProperties.REPS || secondary === ExerciseProperties.REPS) {
+      stateFields.repsInput = '';
+    }
+    if (primary === ExerciseProperties.DISTANCE || secondary === ExerciseProperties.DISTANCE) {
+      stateFields.distanceInput = '';
+      stateFields.distanceUnitSelected = 'm';
+    }
+    // Ignore TIME and NONE
+
+    return stateFields;
+  };
 
   // Cannot be made into an arrow function, as it results in a bug with Expo
   // eslint-disable-next-line class-methods-use-this

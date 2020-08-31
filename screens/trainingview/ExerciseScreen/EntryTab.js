@@ -133,12 +133,17 @@ class EntryTab extends React.Component {
         );
       }
       case ExerciseProperties.TIME: {
-        const formattedTime = new Date(setObj.time * 1000 || 0) // 0 if NaN
+        let formattedTime = new Date(setObj.time * 1000 || 0) // 0 if NaN
           .toISOString()
           .substr(11, 8);
+
+        if (formattedTime[0] === '0') {
+          formattedTime = formattedTime.substr(1, formattedTime.length - 1);
+        }
+
         return (
           <View style={[styles.alignedColumnsContainer, { marginLeft: 20 }]}>
-            <Text style={styles.repsNum}>{formattedTime}</Text>
+            <Text style={styles.timeNum}>{formattedTime}</Text>
           </View>
         );
       }

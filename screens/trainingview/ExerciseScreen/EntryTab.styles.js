@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
   repsLabel: {
     fontSize: 20,
   },
+  timeNum: {
+    marginTop: 6,
+    fontSize: 21,
+  },
   rpe: {
     marginLeft: 48,
     fontSize: 24,

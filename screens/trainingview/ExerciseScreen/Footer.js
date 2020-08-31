@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ExerciseProperties from '../../../redux/ExerciseProperties';
-import { addSetAction } from '../../../redux/actions';
+import { addSetAction, updateSetAction } from '../../../redux/actions';
 import styles from './EntryTab.styles';
 
 class Footer extends React.Component {
@@ -17,9 +17,18 @@ class Footer extends React.Component {
     super(props);
 
     this.addSetDispatch = props.addSetDispatch;
+    this.updateSetDispatch = props.updateSetDispatch;
 
-    const { date, exercise } = props;
+    const {
+      date,
+      exercise,
+      getOnSelectSetObj,
+      getOnUnselectSetObj,
+    } = props;
     const { primary, secondary } = exercise;
+
+    getOnSelectSetObj(this.onSelectSetObj);
+    getOnUnselectSetObj(this.onUnselectSetObj);
 
     this.state = {
       date,
@@ -27,6 +36,52 @@ class Footer extends React.Component {
       ...this.getDefaultInputState(primary, secondary),
     };
   }
+
+  onSelectSetObj = (setObj) => {
+    const { exercise } = this.state;
+    const { primary, secondary } = exercise;
+
+    const stateFields = {};
+
+    if (primary === ExerciseProperties.WEIGHT || secondary === ExerciseProperties.WEIGHT) {
+      stateFields.weightInput = String(setObj.weight);
+    }
+    if (primary === ExerciseProperties.REPS || secondary === ExerciseProperties.REPS) {
+      stateFields.repsInput = String(setObj.reps);
+    }
+    if (primary === ExerciseProperties.DISTANCE || secondary === ExerciseProperties.DISTANCE) {
+      stateFields.distanceInput = String(setObj.distance);
+      stateFields.distanceUnitSelected = String(setObj.distanceUnit);
+    }
+    if (primary === ExerciseProperties.TIME || secondary === ExerciseProperties.TIME) {
+      let seconds = setObj.time;
+      const hours = Math.floor(seconds / 3600);
+      seconds -= hours * 3600;
+      const minutes = Math.floor(seconds / 60);
+      seconds -= minutes * 60;
+
+      stateFields.hoursInput = String(hours);
+      stateFields.minutesInput = String(minutes);
+      stateFields.secondsInput = String(seconds);
+    }
+
+    if (setObj.rpe) {
+      stateFields.rpeInput = String(setObj.rpe);
+    } else {
+      stateFields.rpeInput = undefined;
+    }
+
+    this.setState({
+      selectedSetObj: setObj,
+      ...stateFields,
+    });
+  };
+
+  onUnselectSetObj = () => {
+    this.setState({
+      selectedSetObj: undefined,
+    });
+  };
 
   getDefaultInputState = (primary, secondary) => {
     const stateFields = {};
@@ -160,7 +215,7 @@ class Footer extends React.Component {
   }
 
   addSetHandler = () => {
-    const { distanceUnitSelected } = this.state;
+    const { selectedSetObj, distanceUnitSelected } = this.state;
     let {
       weightInput,
       repsInput,
@@ -186,15 +241,26 @@ class Footer extends React.Component {
 
     const time = hoursInput * 3600 + minutesInput * 60 + secondsInput;
 
-    this.addSetDispatch(
-      this.state,
-      weightInput,
-      repsInput,
-      distanceInput,
-      distanceUnitSelected,
-      time,
-      rpeInput,
-    );
+    if (selectedSetObj) {
+      selectedSetObj.weight = weightInput;
+      selectedSetObj.reps = repsInput;
+      selectedSetObj.distance = distanceInput;
+      selectedSetObj.distanceUnit = distanceUnitSelected;
+      selectedSetObj.time = time;
+      selectedSetObj.rpe = rpeInput;
+
+      this.updateSetDispatch(selectedSetObj);
+    } else {
+      this.addSetDispatch(
+        this.state,
+        weightInput,
+        repsInput,
+        distanceInput,
+        distanceUnitSelected,
+        time,
+        rpeInput,
+      );
+    }
   }
 
   render = () => {
@@ -240,7 +306,15 @@ Footer.propTypes = {
     primary: PropTypes.string,
     secondary: PropTypes.string,
   }).isRequired,
+  getOnSelectSetObj: PropTypes.func,
+  getOnUnselectSetObj: PropTypes.func,
   addSetDispatch: PropTypes.func.isRequired,
+  updateSetDispatch: PropTypes.func.isRequired,
+};
+
+Footer.defaultProps = {
+  getOnSelectSetObj: () => {},
+  getOnUnselectSetObj: () => {},
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -259,6 +333,9 @@ const mapDispatchToProps = (dispatch) => ({
       time,
       rpe,
     }));
+  },
+  updateSetDispatch: (set) => {
+    dispatch(updateSetAction(set));
   },
 });
 

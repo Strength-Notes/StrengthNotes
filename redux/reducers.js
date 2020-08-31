@@ -3,6 +3,7 @@ import { REHYDRATE } from 'redux-persist';
 import arrayMove from 'array-move';
 import {
   ADD_SET,
+  UPDATE_SET,
   UPDATE_SET_COMMENT,
   REMOVE_SET,
   MOVE_SET,
@@ -110,6 +111,17 @@ function setsReducer(state = [{}], action) {
         newState[0][date] = [action.payload];
       } else {
         newState[0][date] = [...newState[0][date], action.payload];
+      }
+      return newState;
+    }
+    case UPDATE_SET: {
+      const set = action.payload;
+      const { date, key } = set;
+
+      const setIndex = findSetInArrayByKey(newState[0][date], key);
+
+      if (setIndex !== -1) {
+        newState[0][date][setIndex] = set;
       }
       return newState;
     }

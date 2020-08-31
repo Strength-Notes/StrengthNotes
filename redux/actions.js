@@ -1,4 +1,5 @@
 export const ADD_SET = 'ADD_SET';
+export const UPDATE_SET = 'UPDATE_SET';
 export const UPDATE_SET_COMMENT = 'UPDATE_SET_COMMENT';
 export const REMOVE_SET = 'REMOVE_SET';
 export const MOVE_SET = 'MOVE_SET';
@@ -10,6 +11,11 @@ export const REMOVE_EXERCISE = 'REMOVE_EXERCISE';
 export const addSetAction = (update) => ({
   type: ADD_SET,
   payload: update,
+});
+
+export const updateSetAction = (set) => ({
+  type: UPDATE_SET,
+  payload: set,
 });
 
 export const updateSetCommentAction = (set, newComment) => ({

@@ -210,7 +210,13 @@ class EntryTab extends React.Component {
       setsOfExercise,
       commentModalVisible,
       commentModalSet,
+      selectedSet,
     } = this.state;
+    let selectedSetKey = '';
+
+    if (selectedSet) {
+      selectedSetKey = selectedSet.key;
+    }
 
     return (
       <SafeAreaView style={styles.container}>
@@ -233,6 +239,22 @@ class EntryTab extends React.Component {
           renderItem={
             ({ item, drag }) => (
               <TouchableOpacity
+                style={[selectedSetKey === item.key ? styles.selectedSetRow : null]}
+                onPress={() => {
+                  const { onSelectSetObj, onUnselectSetObj } = this.state;
+
+                  if (selectedSetKey === item.key) {
+                    this.setState({
+                      selectedSet: undefined,
+                    });
+                    onUnselectSetObj();
+                  } else {
+                    this.setState({
+                      selectedSet: item,
+                    });
+                    onSelectSetObj(item);
+                  }
+                }}
                 onLongPress={drag}
               >
                 <this.getSetRow setObj={item} />
@@ -251,6 +273,16 @@ class EntryTab extends React.Component {
         <Footer
           date={date}
           exercise={exercise}
+          getOnSelectSetObj={(onSelectSetObj) => {
+            this.setState({
+              onSelectSetObj,
+            });
+          }}
+          getOnUnselectSetObj={(onUnselectSetObj) => {
+            this.setState({
+              onUnselectSetObj,
+            });
+          }}
         />
       </SafeAreaView>
     );

@@ -23,6 +23,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 3,
   },
+  selectedSetRow: {
+    backgroundColor: 'blue',
+    borderRadius: 5,
+  },
   alignedColumnsContainer: {
     flex: 1,
     flexDirection: 'row',

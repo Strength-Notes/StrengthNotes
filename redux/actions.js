@@ -4,6 +4,7 @@ export const UPDATE_SET_COMMENT = 'UPDATE_SET_COMMENT';
 export const REMOVE_SET = 'REMOVE_SET';
 export const MOVE_SET = 'MOVE_SET';
 export const REORDER_SETS_OF_EXERCISE = 'REORDER_SETS_OF_EXERCISE';
+export const UPDATE_DAY_COMMENT = 'UPDATE_DAY_COMMENT';
 
 export const ADD_EXERCISE = 'ADD_EXERCISE';
 export const REMOVE_EXERCISE = 'REMOVE_EXERCISE';
@@ -44,6 +45,14 @@ export const reorderSetsOfExerciseAction = (date, exercisesList) => ({
   payload: {
     date,
     exercisesList,
+  },
+});
+
+export const updateDayCommentAction = (date, newComment) => ({
+  type: UPDATE_DAY_COMMENT,
+  payload: {
+    date,
+    newComment,
   },
 });
 

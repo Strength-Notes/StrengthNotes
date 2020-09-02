@@ -4,8 +4,10 @@ import {
   Dimensions,
   Text,
   View,
+  TouchableOpacity,
   BackHandler,
 } from 'react-native';
+import { Card } from 'react-native-elements';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -34,6 +36,8 @@ class TrainingList extends React.Component {
     const {
       sets,
       date,
+      comment,
+      onClickCommentBox,
       xPositionOffset,
       updateNavigationHeader,
       clearSelection,
@@ -44,6 +48,8 @@ class TrainingList extends React.Component {
     this.state = {
       sets,
       date,
+      comment,
+      onClickCommentBox,
       xPositionOffset,
       updateNavigationHeader,
       selectedExerciseNames: [],
@@ -62,10 +68,19 @@ class TrainingList extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
-    const { sets, date, xPositionOffset } = newProps;
+    const {
+      sets,
+      date,
+      comment,
+      onClickCommentBox,
+      xPositionOffset,
+    } = newProps;
+
     this.setState({
       sets,
       date,
+      comment,
+      onClickCommentBox,
       xPositionOffset,
     });
   }
@@ -92,6 +107,8 @@ class TrainingList extends React.Component {
     const {
       sets,
       date,
+      comment,
+      onClickCommentBox,
       xPositionOffset,
       selectedExerciseNames,
       updateNavigationHeader,
@@ -110,71 +127,101 @@ class TrainingList extends React.Component {
 
     if (exerciseNamesToday.length > 0) {
       return (
-        <DraggableFlatList
-          style={{ transform: [{ translateX: xPositionOffset }], width, height }}
-          data={exerciseNamesToday}
-          renderItem={
-            ({ item, drag }) => (
-              <ExerciseCard
-                name={item}
-                sets={getSetsOfExercise(setsAtDate, item)}
-                drag={drag}
-                navigation={this.navigation}
-                date={date}
-                onSelectEvent={(type) => {
-                  switch (type) {
-                    case SelectEvent.SELECTED: {
-                      selectedExerciseNames.push(item);
-                      this.setState({
-                        selectedExerciseNames,
-                      });
-                      break;
-                    }
-                    case SelectEvent.UNSELECTED: {
-                      // Remove from array
-                      const index = selectedExerciseNames.indexOf(item);
-                      if (index > -1) {
-                        selectedExerciseNames.splice(index, 1);
+        <View style={{ flex: 1 }}>
+          <DraggableFlatList
+            style={{ transform: [{ translateX: xPositionOffset }], width, height }}
+            data={comment ? [null, ...exerciseNamesToday] : exerciseNamesToday}
+            renderItem={
+              ({ item, drag }) => {
+                if (item === null) { // Null represents comment box
+                  return (
+                    <TouchableOpacity
+                      onPress={onClickCommentBox}
+                    >
+                      <Card>
+                        <Text>{comment}</Text>
+                      </Card>
+                    </TouchableOpacity>
+                  );
+                }
+                return (
+                  <ExerciseCard
+                    name={item}
+                    sets={getSetsOfExercise(setsAtDate, item)}
+                    drag={drag}
+                    navigation={this.navigation}
+                    date={date}
+                    onSelectEvent={(type) => {
+                      switch (type) {
+                        case SelectEvent.SELECTED: {
+                          selectedExerciseNames.push(item);
+                          this.setState({
+                            selectedExerciseNames,
+                          });
+                          break;
+                        }
+                        case SelectEvent.UNSELECTED: {
+                          // Remove from array
+                          const index = selectedExerciseNames.indexOf(item);
+                          if (index > -1) {
+                            selectedExerciseNames.splice(index, 1);
+                          }
+                          this.setState({
+                            selectedExerciseNames,
+                          });
+                          break;
+                        }
+                        default: {
+                          // Do nothing
+                        }
                       }
-                      this.setState({
-                        selectedExerciseNames,
-                      });
-                      break;
-                    }
-                    default: {
-                      // Do nothing
-                    }
-                  }
-                }}
-                isInSelectionMode={this.isInSelectionMode()}
-                isSelected={this.isSelected(item)}
-              />
-            )
-          }
-          keyExtractor={(item) => `draggable-item-${item}`}
-          onDragEnd={({ data }) => {
-            this.setState({ exerciseNamesToday: data });
-            this.reorderSetsOfExerciseDispatch(date, data);
-          }}
-          activationDistance={5}
-        />
+                    }}
+                    isInSelectionMode={this.isInSelectionMode()}
+                    isSelected={this.isSelected(item)}
+                  />
+                );
+              }
+            }
+            keyExtractor={(item) => `draggable-item-${item}`}
+            onDragEnd={({ data }) => {
+              this.setState({ exerciseNamesToday: data });
+              this.reorderSetsOfExerciseDispatch(date, data);
+            }}
+            activationDistance={5}
+          />
+        </View>
       );
     } // Today is empty
     return (
-      <DraggableFlatList
-        style={{ transform: [{ translateX: xPositionOffset }], width, height }}
-        data={['Nothing to show.\r\n Start a new session?']}
-        renderItem={
-          ({ item }) => (
-            <View style={styles.emptyDayView}>
-              <Text style={styles.emptyDayText}>{item}</Text>
-            </View>
-          )
-        }
-        keyExtractor={(item) => `draggable-item-${item}`}
-        onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
-        activationDistance={5}
-      />
+      <View style={{ flex: 1 }}>
+        <DraggableFlatList
+          style={{ transform: [{ translateX: xPositionOffset }], width, height }}
+          data={comment ? [null, 'Start a new session?'] : ['Nothing to show.\r\n Start a new session?']}
+          renderItem={
+            ({ item }) => {
+              if (item === null) { // Comment box
+                return (
+                  <TouchableOpacity
+                    onPress={onClickCommentBox}
+                  >
+                    <Card>
+                      <Text>{comment}</Text>
+                    </Card>
+                  </TouchableOpacity>
+                );
+              }
+              return (
+                <View style={styles.emptyDayView}>
+                  <Text style={styles.emptyDayText}>{item}</Text>
+                </View>
+              );
+            }
+          }
+          keyExtractor={(item) => `draggable-item-${item}`}
+          onDragEnd={({ data }) => { this.setState({ exerciseNamesToday: data }); }}
+          activationDistance={5}
+        />
+      </View>
     );
   }
 }
@@ -182,6 +229,8 @@ class TrainingList extends React.Component {
 TrainingList.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
   date: PropTypes.string.isRequired,
+  comment: PropTypes.string,
+  onClickCommentBox: PropTypes.func,
   xPositionOffset: PropTypes.number.isRequired,
   reorderSetsOfExerciseDispatch: PropTypes.func.isRequired,
   updateNavigationHeader: PropTypes.func,
@@ -192,6 +241,8 @@ TrainingList.propTypes = {
 };
 
 TrainingList.defaultProps = {
+  comment: '',
+  onClickCommentBox: () => {},
   updateNavigationHeader: () => {},
   clearSelection: () => {},
 };

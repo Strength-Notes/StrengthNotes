@@ -1,4 +1,4 @@
-import CommentModal from '../../../../screens/trainingview/ExerciseScreen/CommentModal';
+import CommentModal from '../../../screens/trainingview/CommentModal';
 
 describe('<CommentModal />', () => {
   it('returns the proper component', () => {

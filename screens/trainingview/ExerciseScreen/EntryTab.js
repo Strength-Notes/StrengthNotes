@@ -25,7 +25,7 @@ import {
   removeSetAction,
   moveSetAction,
 } from '../../../redux/actions';
-import CommentModal from './CommentModal';
+import CommentModal from '../CommentModal';
 import Footer from './Footer';
 import styles from './EntryTab.styles';
 

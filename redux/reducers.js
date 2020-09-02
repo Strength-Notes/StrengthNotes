@@ -8,6 +8,7 @@ import {
   REMOVE_SET,
   MOVE_SET,
   REORDER_SETS_OF_EXERCISE,
+  UPDATE_DAY_COMMENT,
   ADD_EXERCISE,
   REMOVE_EXERCISE,
 } from './actions';
@@ -210,9 +211,32 @@ function exercisesReducer(state = initialExercisesState, action) {
   }
 }
 
+function dayCommentsReducer(state = [{}], action) {
+  let newState = [...state];
+
+  switch (action.type) {
+    case UPDATE_DAY_COMMENT: {
+      const { date, newComment } = action.payload;
+
+      newState[0][date] = newComment;
+      return newState;
+    }
+    case REHYDRATE: {
+      if (action.payload) {
+        newState = action.payload.exercises;
+      }
+      return newState;
+    }
+    default: {
+      return newState;
+    }
+  }
+}
+
 const rootReducer = combineReducers({
   sets: setsReducer,
   exercises: exercisesReducer,
+  dayComments: dayCommentsReducer,
 });
 
 export default rootReducer;

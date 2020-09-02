@@ -65,7 +65,7 @@ const CommentModal = ({
           style={styles.textInput}
           onChangeText={onChangeComment}
           value={comment}
-          placeholder="Enter set details here"
+          placeholder="Enter comment here"
           placeholderTextColor="gray"
           multiline
         />

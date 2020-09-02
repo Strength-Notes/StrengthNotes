@@ -17,7 +17,7 @@ import {
 } from '../../../redux/organizers';
 import { updateSetCommentAction } from '../../../redux/actions';
 import ExerciseProperties from '../../../redux/ExerciseProperties';
-import CommentModal from './CommentModal';
+import CommentModal from '../CommentModal';
 import styles from './HistoryTab.styles';
 
 class HistoryTab extends React.Component {

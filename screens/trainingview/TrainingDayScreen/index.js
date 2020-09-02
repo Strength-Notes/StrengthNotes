@@ -12,12 +12,15 @@ import Icon from 'react-native-vector-icons/Feather';
 // eslint-disable-next-line import/no-named-default
 import { default as AntIcon } from 'react-native-vector-icons/AntDesign';
 // eslint-disable-next-line import/no-named-default
-import { default as MaterialIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
+import { default as MaterialCommunityIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
+// eslint-disable-next-line import/no-named-default
+import { default as MaterialIcon } from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removeSetAction } from '../../../redux/actions';
+import { removeSetAction, updateDayCommentAction } from '../../../redux/actions';
 import { getFormattedDateString, getDateObjectFromString, getSetsOfExercise } from '../../../redux/organizers';
 import TrainingList from './TrainingList';
+import CommentModal from '../CommentModal';
 
 const styles = StyleSheet.create({
   headerBarRightContainer: {
@@ -68,10 +71,12 @@ class TrainingDayScreen extends React.Component {
     this.navigation = props.navigation;
 
     this.removeSetDispatch = props.removeSetDispatch;
+    this.updateDayCommentDispatch = props.updateDayCommentDispatch;
 
     this.state = {
       date: props.route.params.date,
       sets: props.sets,
+      dayComments: props.dayComments,
     };
 
     this.translateX = new Value(0);
@@ -93,11 +98,12 @@ class TrainingDayScreen extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) { // eslint-disable-line
     const { date } = nextProps.route.params;
-    const { sets } = nextProps;
+    const { sets, dayComments } = nextProps;
 
     this.setState({
       date,
       sets,
+      dayComments,
     });
   }
 
@@ -176,6 +182,23 @@ class TrainingDayScreen extends React.Component {
     }
   }
 
+  hasComment = () => {
+    const { date, dayComments } = this.state;
+    return !!dayComments[0][date];
+  };
+
+  openCommentModal = () => {
+    this.setState({
+      commentModalVisible: true,
+    });
+  }
+
+  closeCommentModal = () => {
+    this.setState({
+      commentModalVisible: false,
+    });
+  }
+
   updateNavigationHeader = (selectedExerciseNames, setsAtDate) => {
     if (selectedExerciseNames.length > 0) {
       this.navigation.setOptions({
@@ -207,6 +230,15 @@ class TrainingDayScreen extends React.Component {
           <View style={styles.headerBarRightContainer}>
             <TouchableOpacity
               style={styles.headerBarAddExerciseButton}
+              onPress={this.openCommentModal}
+            >
+              <MaterialIcon
+                name={this.hasComment() ? 'chat' : 'chat-bubble-outline'}
+                size={32}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.headerBarAddExerciseButton}
               onPress={() => {
                 requestAnimationFrame(() => {
                   this.navigation.navigate(
@@ -230,7 +262,7 @@ class TrainingDayScreen extends React.Component {
                 });
               }}
             >
-              <MaterialIcon
+              <MaterialCommunityIcon
                 name="calendar-month-outline"
                 size={40}
               />
@@ -242,7 +274,12 @@ class TrainingDayScreen extends React.Component {
   };
 
   render() {
-    const { date, sets } = this.state;
+    const {
+      date,
+      sets,
+      dayComments,
+      commentModalVisible,
+    } = this.state;
 
     const { width } = Dimensions.get('window');
 
@@ -251,6 +288,14 @@ class TrainingDayScreen extends React.Component {
 
     return (
       <View style={styles.container}>
+        <CommentModal
+          comment={dayComments[0][date]}
+          onChangeComment={(newComment) => {
+            this.updateDayCommentDispatch(date, newComment);
+          }}
+          modalVisible={commentModalVisible || false}
+          closeModal={this.closeCommentModal}
+        />
         <View style={styles.dateHeaderContainer}>
           <Text style={styles.dateHeader}>{this.prettifyDateString(date)}</Text>
         </View>
@@ -265,6 +310,7 @@ class TrainingDayScreen extends React.Component {
               navigation={this.navigation}
               sets={sets}
               date={yesterday}
+              comment={dayComments[0][yesterday]}
               xPositionOffset={-width}
             />
             <View>
@@ -272,6 +318,12 @@ class TrainingDayScreen extends React.Component {
                 navigation={this.navigation}
                 sets={sets}
                 date={date}
+                comment={dayComments[0][date]}
+                onClickCommentBox={() => {
+                  requestAnimationFrame(() => {
+                    this.openCommentModal();
+                  });
+                }}
                 xPositionOffset={0}
                 updateNavigationHeader={this.updateNavigationHeader}
                 clearSelection={(clearSelection) => { this.clearCenterSelection = clearSelection; }}
@@ -281,6 +333,7 @@ class TrainingDayScreen extends React.Component {
               navigation={this.navigation}
               sets={sets}
               date={tomorrow}
+              comment={dayComments[0][tomorrow]}
               xPositionOffset={0}
             />
           </Animated.View>
@@ -292,12 +345,14 @@ class TrainingDayScreen extends React.Component {
 
 TrainingDayScreen.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dayComments: PropTypes.arrayOf(PropTypes.object).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
       date: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
+  updateDayCommentDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
@@ -307,10 +362,14 @@ const mapDispatchToProps = (dispatch) => ({
   removeSetDispatch: (setObj) => {
     dispatch(removeSetAction(setObj));
   },
+  updateDayCommentDispatch: (date, newComment) => {
+    dispatch(updateDayCommentAction(date, newComment));
+  },
 });
 
 const mapStateToProps = (state) => ({
   sets: state.sets,
+  dayComments: state.dayComments,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TrainingDayScreen);

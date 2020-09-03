@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
   headerBarAddExerciseButton: {
     margin: 10,
   },
+  headerBarDayCommentButton: {
+    margin: 10,
+    marginTop: 14,
+  },
   container: {
     flex: 1,
   },
@@ -45,10 +49,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 5,
     marginBottom: 5,
-  },
-  addExerciseButton: {
-    alignSelf: 'center',
-    margin: 16,
   },
 });
 
@@ -229,7 +229,7 @@ class TrainingDayScreen extends React.Component {
         headerRight: () => (
           <View style={styles.headerBarRightContainer}>
             <TouchableOpacity
-              style={styles.headerBarAddExerciseButton}
+              style={styles.headerBarDayCommentButton}
               onPress={this.openCommentModal}
             >
               <MaterialIcon

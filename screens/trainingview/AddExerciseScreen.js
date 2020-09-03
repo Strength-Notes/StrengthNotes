@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   rightActionContainer: {
-    flex: 1,
     flexDirection: 'row-reverse',
   },
   editActionButton: {
@@ -91,52 +90,35 @@ class AddExerciseScreen extends React.Component {
     });
   }
 
-  getRightActions = (exerciseObj) => (dragX) => {
-    const trans = dragX.interpolate({
-      inputRange: [-10, 0],
-      outputRange: [50, 0],
-      extrapolate: 'clamp',
-    });
-    return (
-      <View style={styles.rightActionContainer}>
-        <TouchableOpacity
-          style={styles.trashActionButton}
-          onPress={() => this.removeExerciseDispatch(exerciseObj)}
-        >
-          <AnimatedFeatherIcon
-            style={[
-              styles.trashIcon,
-              {
-                transform: [{ translateX: trans }],
-              },
-            ]}
-            name="trash-2"
-            size={32}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.editActionButton}
-          onPress={() => {
-            this.navigation.navigate(
-              'CreateExerciseScreen',
-              { exerciseObj },
-            );
-          }}
-        >
-          <AnimatedFeatherIcon
-            style={[
-              styles.editIcon,
-              {
-                transform: [{ translateX: trans }],
-              },
-            ]}
-            name="edit"
-            size={32}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  getRightActions = (exerciseObj) => () => (
+    <View style={styles.rightActionContainer}>
+      <TouchableOpacity
+        style={styles.trashActionButton}
+        onPress={() => this.removeExerciseDispatch(exerciseObj)}
+      >
+        <AnimatedFeatherIcon
+          style={styles.trashIcon}
+          name="trash-2"
+          size={32}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.editActionButton}
+        onPress={() => {
+          this.navigation.navigate(
+            'CreateExerciseScreen',
+            { exerciseObj },
+          );
+        }}
+      >
+        <AnimatedFeatherIcon
+          style={styles.editIcon}
+          name="edit"
+          size={32}
+        />
+      </TouchableOpacity>
+    </View>
+  );
 
   getOrganizedExercisesForList = (exercises) => {
     // Organize by exercise
@@ -181,6 +163,7 @@ class AddExerciseScreen extends React.Component {
           )}
           renderItem={({ item }) => (
             <Swipeable
+              friction={2}
               renderRightActions={this.getRightActions(item)}
             >
               <TouchableOpacity

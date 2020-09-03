@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   alignedColumnsContainer: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
@@ -55,8 +55,9 @@ const styles = StyleSheet.create({
     fontSize: 21,
   },
   rpe: {
+    marginTop: 4,
     marginLeft: 48,
-    fontSize: 24,
+    fontSize: 16,
   },
   footerContainer: {
     flexDirection: 'row',

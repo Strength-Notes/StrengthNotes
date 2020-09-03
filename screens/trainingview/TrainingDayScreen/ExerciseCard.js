@@ -196,7 +196,7 @@ class ExerciseCard extends React.Component {
         <Text style={styles.rpe}>
           { // Only render RPE if the field exists
             setObj.rpe ? (
-              `RPE ${setObj.rpe}`
+              `@ ${setObj.rpe}`
             ) : []
           }
         </Text>

@@ -164,7 +164,7 @@ class HistoryTab extends React.Component {
         <Text style={[styles.rpe, styles.alignedColumnsContainer]}>
           { // Only render RPE if the field exists
             setObj.rpe ? (
-              `RPE ${setObj.rpe}`
+              `@ ${setObj.rpe}`
             ) : []
           }
         </Text>

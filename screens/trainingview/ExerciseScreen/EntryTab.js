@@ -196,10 +196,10 @@ class EntryTab extends React.Component {
             property={secondary}
           />
 
-          <Text style={[styles.rpe, styles.alignedColumnsContainer]}>
+          <Text style={[styles.rpe, styles.alignedColumnsContainer, { flex: 1 }]}>
             { // Only render RPE if the field exists
               setObj.rpe ? (
-                `RPE ${setObj.rpe}`
+                `@ ${setObj.rpe}`
               ) : []
             }
           </Text>

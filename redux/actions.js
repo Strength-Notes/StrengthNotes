@@ -27,9 +27,9 @@ export const updateSetCommentAction = (set, newComment) => ({
   },
 });
 
-export const removeSetAction = (update) => ({
+export const removeSetAction = (set) => ({
   type: REMOVE_SET,
-  payload: update,
+  payload: set,
 });
 
 export const moveSetAction = (set, distanceMoved) => ({

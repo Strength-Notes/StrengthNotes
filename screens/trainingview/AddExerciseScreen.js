@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/AntDesign';
 // eslint-disable-next-line import/no-named-default
 import { default as FeatherIcon } from 'react-native-vector-icons/Feather';
@@ -41,6 +40,13 @@ const styles = StyleSheet.create({
   exerciseNameText: {
     fontSize: 16,
     margin: 5,
+  },
+  rightActionContainer: {
+    flex: 1,
+    flexDirection: 'row-reverse',
+  },
+  editActionButton: {
+    marginRight: 8,
   },
 });
 
@@ -92,21 +98,43 @@ class AddExerciseScreen extends React.Component {
       extrapolate: 'clamp',
     });
     return (
-      <RectButton
-        style={styles.trashActionButton}
-        onPress={() => this.removeExerciseDispatch(exerciseObj)}
-      >
-        <AnimatedFeatherIcon
-          style={[
-            styles.trashIcon,
-            {
-              transform: [{ translateX: trans }],
-            },
-          ]}
-          name="trash-2"
-          size={32}
-        />
-      </RectButton>
+      <View style={styles.rightActionContainer}>
+        <TouchableOpacity
+          style={styles.trashActionButton}
+          onPress={() => this.removeExerciseDispatch(exerciseObj)}
+        >
+          <AnimatedFeatherIcon
+            style={[
+              styles.trashIcon,
+              {
+                transform: [{ translateX: trans }],
+              },
+            ]}
+            name="trash-2"
+            size={32}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editActionButton}
+          onPress={() => {
+            this.navigation.navigate(
+              'CreateExerciseScreen',
+              { exerciseObj },
+            );
+          }}
+        >
+          <AnimatedFeatherIcon
+            style={[
+              styles.editIcon,
+              {
+                transform: [{ translateX: trans }],
+              },
+            ]}
+            name="edit"
+            size={32}
+          />
+        </TouchableOpacity>
+      </View>
     );
   };
 

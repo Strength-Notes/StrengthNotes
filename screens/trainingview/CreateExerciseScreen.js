@@ -35,10 +35,24 @@ class CreateExerciseScreen extends React.Component {
     this.navigation = props.navigation;
     this.addExerciseDispatch = props.addExerciseDispatch;
 
+    let exerciseObj;
+    if (props.route.params) {
+      exerciseObj = props.route.params.exerciseObj;
+    }
+
+    const stateFields = {};
+    if (exerciseObj) {
+      stateFields.nameInput = exerciseObj.name;
+      stateFields.categoryInput = exerciseObj.category;
+      stateFields.primarySelected = exerciseObj.primary;
+      stateFields.secondarySelected = exerciseObj.secondary;
+    }
+
     // Set defaults: needed to prevent bug when using default value
     this.state = {
       primarySelected: ExerciseProperties.WEIGHT,
       secondarySelected: ExerciseProperties.REPS,
+      ...stateFields, // Only applicable for when a exerciseObj is handed as param
     };
   }
 
@@ -152,7 +166,20 @@ CreateExerciseScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      exerciseObj: PropTypes.shape({
+        name: PropTypes.string,
+        primary: PropTypes.string,
+        secondary: PropTypes.string,
+      }),
+    }),
+  }),
   addExerciseDispatch: PropTypes.func.isRequired,
+};
+
+CreateExerciseScreen.defaultProps = {
+  route: {},
 };
 
 const mapDispatchToProps = (dispatch) => ({

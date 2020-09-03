@@ -187,9 +187,14 @@ function exercisesReducer(state = initialExercisesState, action) {
 
   switch (action.type) {
     case ADD_EXERCISE: {
+      const index = findExerciseInArrayByName(newState, action.payload.name);
+
       // Only add the new exercise def if no other exists with same name
-      if (findExerciseInArrayByName(newState, action.payload.name) === -1) {
+      if (index === -1) {
         newState = [...newState, action.payload];
+      } else {
+        // Otherwise, update the currently existing exercise def
+        newState[index] = action.payload;
       }
       return newState;
     }

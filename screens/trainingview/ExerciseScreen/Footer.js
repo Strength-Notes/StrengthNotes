@@ -219,6 +219,38 @@ class Footer extends React.Component {
     }
   }
 
+  areSetsEqual = (selectedSetObj = {}, weight, reps, distance, distanceUnit, time, rpe) => {
+    const { exercise } = this.state;
+    const { primary, secondary } = exercise;
+
+    if (primary === ExerciseProperties.WEIGHT || secondary === ExerciseProperties.WEIGHT) {
+      if (selectedSetObj.weight !== weight) {
+        return false;
+      }
+    }
+    if (primary === ExerciseProperties.REPS || secondary === ExerciseProperties.REPS) {
+      if (selectedSetObj.reps !== reps) {
+        return false;
+      }
+    }
+    if (primary === ExerciseProperties.DISTANCE || secondary === ExerciseProperties.DISTANCE) {
+      if (selectedSetObj.distance !== distance || selectedSetObj.distanceUnit !== distanceUnit) {
+        return false;
+      }
+    }
+    if (primary === ExerciseProperties.TIME || secondary === ExerciseProperties.TIME) {
+      if (selectedSetObj.time !== time) {
+        return false;
+      }
+    }
+
+    if (selectedSetObj.rpe !== rpe && (selectedSetObj.rpe || rpe)) {
+      return false;
+    }
+
+    return true; // If we can't prove them to be different, they must be the same!
+  };
+
   addSetHandler = () => {
     const { selectedSetObj, distanceUnitSelected } = this.state;
     let {
@@ -246,7 +278,12 @@ class Footer extends React.Component {
 
     const time = hoursInput * 3600 + minutesInput * 60 + secondsInput;
 
-    if (selectedSetObj) {
+    const equalToSelectedSet = this.areSetsEqual(
+      selectedSetObj, weightInput, repsInput, distanceInput,
+      distanceUnitSelected, time, rpeInput,
+    );
+
+    if (selectedSetObj && !equalToSelectedSet) {
       selectedSetObj.weight = weightInput;
       selectedSetObj.reps = repsInput;
       selectedSetObj.distance = distanceInput;

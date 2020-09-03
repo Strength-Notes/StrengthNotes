@@ -12,5 +12,6 @@ Currently tested on Android only. Feel free to test on iOS or any platforms, and
 
 ## Useful Links
 
+- [Google Play](https://play.google.com/store/apps/details?id=com.strengthnotes.strengthnotes)
 - [Trello](https://trello.com/b/vJDhafyT/strengthnotes)
 - [Expo Project Page](https://expo.io/@sorbetonion/StrengthNotes)

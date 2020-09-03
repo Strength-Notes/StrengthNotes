@@ -99,6 +99,7 @@ class CreateExerciseScreen extends React.Component {
             }}
             value={nameInput}
             placeholder="Name"
+            autoCapitalize="words"
           />
         </Card>
         <Card title="Category">
@@ -108,6 +109,7 @@ class CreateExerciseScreen extends React.Component {
             }}
             value={categoryInput}
             placeholder="Category"
+            autoCapitalize="words"
           />
         </Card>
         <Card title="Primary">

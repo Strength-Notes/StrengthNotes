@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ExerciseProperties from '../../../redux/ExerciseProperties';
-import { addSetAction, updateSetAction } from '../../../redux/actions';
+import { addSetAction, updateSetAction, removeSetAction } from '../../../redux/actions';
 import styles from './EntryTab.styles';
 
 class Footer extends React.Component {
@@ -18,6 +18,7 @@ class Footer extends React.Component {
 
     this.addSetDispatch = props.addSetDispatch;
     this.updateSetDispatch = props.updateSetDispatch;
+    this.removeSetDispatch = props.removeSetDispatch;
 
     const {
       date,
@@ -36,6 +37,28 @@ class Footer extends React.Component {
       ...this.getDefaultInputState(primary, secondary),
     };
   }
+
+  getDefaultInputState = (primary, secondary) => {
+    const stateFields = {};
+
+    // Only initialize as empty string if it's a property in use
+    //   This is to prevent all sets having unnecessary empty string fields
+    if (primary === ExerciseProperties.WEIGHT || secondary === ExerciseProperties.WEIGHT) {
+      stateFields.weightInput = '';
+    }
+    if (primary === ExerciseProperties.REPS || secondary === ExerciseProperties.REPS) {
+      stateFields.repsInput = '';
+    }
+    if (primary === ExerciseProperties.DISTANCE || secondary === ExerciseProperties.DISTANCE) {
+      stateFields.distanceInput = '';
+      stateFields.distanceUnitSelected = 'm';
+    }
+    // Ignore TIME and NONE
+
+    stateFields.rpeInput = '';
+
+    return stateFields;
+  };
 
   onSelectSetObj = (setObj) => {
     const { exercise } = this.state;
@@ -81,24 +104,6 @@ class Footer extends React.Component {
     this.setState({
       selectedSetObj: undefined,
     });
-  };
-
-  getDefaultInputState = (primary, secondary) => {
-    const stateFields = {};
-
-    if (primary === ExerciseProperties.WEIGHT || secondary === ExerciseProperties.WEIGHT) {
-      stateFields.weightInput = '';
-    }
-    if (primary === ExerciseProperties.REPS || secondary === ExerciseProperties.REPS) {
-      stateFields.repsInput = '';
-    }
-    if (primary === ExerciseProperties.DISTANCE || secondary === ExerciseProperties.DISTANCE) {
-      stateFields.distanceInput = '';
-      stateFields.distanceUnitSelected = 'm';
-    }
-    // Ignore TIME and NONE
-
-    return stateFields;
   };
 
   // Cannot be made into an arrow function, as it results in a bug with Expo
@@ -263,12 +268,33 @@ class Footer extends React.Component {
     }
   }
 
+  clearButtonHandler = () => {
+    const { selectedSetObj, exercise } = this.state;
+    const { primary, secondary } = exercise;
+
+    // Check if set is selected
+    if (selectedSetObj) {
+      this.onUnselectSetObj();
+      this.removeSetDispatch(selectedSetObj);
+    } else {
+      this.setState({
+        ...this.getDefaultInputState(primary, secondary),
+      });
+    }
+  };
+
   render = () => {
     const { exercise } = this.state;
     const { primary, secondary } = exercise;
 
     return (
       <View style={styles.footerContainer}>
+        <TouchableOpacity
+          style={styles.clearButton}
+          onPress={this.clearButtonHandler}
+        >
+          <Text style={styles.clearButtonText}>Clear</Text>
+        </TouchableOpacity>
         <this.getExerciseInput
           property={primary}
           state={this.state}
@@ -310,6 +336,7 @@ Footer.propTypes = {
   getOnUnselectSetObj: PropTypes.func,
   addSetDispatch: PropTypes.func.isRequired,
   updateSetDispatch: PropTypes.func.isRequired,
+  removeSetDispatch: PropTypes.func.isRequired,
 };
 
 Footer.defaultProps = {
@@ -336,6 +363,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   updateSetDispatch: (set) => {
     dispatch(updateSetAction(set));
+  },
+  removeSetDispatch: (set) => {
+    dispatch(removeSetAction(set));
   },
 });
 

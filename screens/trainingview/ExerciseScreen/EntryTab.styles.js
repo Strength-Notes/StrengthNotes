@@ -103,6 +103,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 3,
   },
+  clearButton: {
+    margin: 3,
+    marginLeft: 8,
+  },
+  clearButtonText: {
+    flex: 1,
+    width: 64,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    backgroundColor: 'lightgray',
+    borderRadius: 5,
+  },
   addButton: {
     margin: 3,
     marginLeft: 8,

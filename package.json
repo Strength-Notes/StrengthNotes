@@ -52,7 +52,7 @@
     "react-native-screens": "~2.9.0",
     "react-native-tab-view": "^2.14.4",
     "react-native-vector-icons": "^7.0.0",
-    "react-native-web": "~0.13.3",
+    "react-native-web": "~0.14.0",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",

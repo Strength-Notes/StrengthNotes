@@ -213,10 +213,11 @@ class ExerciseCard extends React.Component {
         onLongPress={() => (this.handleLongPress())}
       >
         <Card
-          title={this.name}
-          titleStyle={styles.exerciseName}
           containerStyle={isSelected ? styles.cardSelected : null}
         >
+          <Card.Title style={styles.exerciseName}>
+            <Text>{this.name}</Text>
+          </Card.Title>
           {
             // Render each set under it's respective exercise name
             sets.map((setObj) => (

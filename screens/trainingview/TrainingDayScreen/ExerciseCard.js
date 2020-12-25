@@ -94,7 +94,7 @@ class ExerciseCard extends React.Component {
     });
   }
 
-  handlePress() { // eslint-disable-line
+  handlePress() {
     const {
       isInSelectionMode,
       isSelected,

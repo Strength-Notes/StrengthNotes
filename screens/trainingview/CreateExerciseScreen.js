@@ -92,7 +92,9 @@ class CreateExerciseScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Card title="Name">
+        <Card>
+          <Card.Title>Name</Card.Title>
+          <Card.Divider />
           <TextInput
             onChangeText={(text) => {
               this.setState({ nameInput: text });
@@ -102,7 +104,9 @@ class CreateExerciseScreen extends React.Component {
             autoCapitalize="words"
           />
         </Card>
-        <Card title="Category">
+        <Card>
+          <Card.Title>Category</Card.Title>
+          <Card.Divider />
           <TextInput
             onChangeText={(text) => {
               this.setState({ categoryInput: text });
@@ -112,7 +116,9 @@ class CreateExerciseScreen extends React.Component {
             autoCapitalize="words"
           />
         </Card>
-        <Card title="Primary">
+        <Card>
+          <Card.Title>Primary</Card.Title>
+          <Card.Divider />
           <Picker
             selectedValue={primarySelected}
             onValueChange={(selected) => {
@@ -127,7 +133,9 @@ class CreateExerciseScreen extends React.Component {
             }
           </Picker>
         </Card>
-        <Card title="Secondary">
+        <Card>
+          <Card.Title>Secondary</Card.Title>
+          <Card.Divider />
           <Picker
             selectedValue={secondarySelected}
             onValueChange={(selected) => {

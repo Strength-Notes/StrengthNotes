@@ -12,6 +12,9 @@ import ExerciseProperties from '../../../redux/ExerciseProperties';
 import { shapeOfSetObject } from '../../../redux/store';
 import { getExerciseObjectFromName } from '../../../redux/organizers';
 
+// Max number of sets to display
+const MAX_SETS_DISPLAY = 5;
+
 const SelectEvent = {
   SELECTED: 'SELECTED',
   UNSELECTED: 'UNSELECTED',
@@ -164,7 +167,7 @@ class ExerciseCard extends React.Component {
     }
   }
 
-  getSetRow = (setObj) => {
+  getSetRow = (setObj, numberOfSets, setNumber) => {
     let { exercise } = this.state;
 
     // If undefined, give it defaults to prevent crashing
@@ -178,35 +181,49 @@ class ExerciseCard extends React.Component {
 
     const { primary, secondary } = exercise;
 
-    return (
-      <View
-        key={setObj.key}
-        style={styles.setRow}
-      >
-        <this.getExercisePropertyView
-          setObj={setObj}
-          property={primary}
-        />
+    if (setNumber <= MAX_SETS_DISPLAY) {
+      return (
+        <View
+          key={setObj.key}
+          style={styles.setRow}
+        >
+          <this.getExercisePropertyView
+            setObj={setObj}
+            property={primary}
+          />
 
-        <this.getExercisePropertyView
-          setObj={setObj}
-          property={secondary}
-        />
+          <this.getExercisePropertyView
+            setObj={setObj}
+            property={secondary}
+          />
 
-        <Text style={styles.rpe}>
-          { // Only render RPE if the field exists
-            setObj.rpe ? (
-              `@ ${setObj.rpe}`
-            ) : []
-          }
-        </Text>
-      </View>
-    );
+          <Text style={styles.rpe}>
+            { // Only render RPE if the field exists
+              setObj.rpe ? (
+                `@ ${setObj.rpe}`
+              ) : []
+            }
+          </Text>
+        </View>
+      );
+    }
+    if (setNumber === MAX_SETS_DISPLAY + 1) {
+      return (
+        <View
+          key={setObj.key}
+          style={styles.setRow}
+        >
+          <Text>And {numberOfSets - MAX_SETS_DISPLAY} more...</Text>
+        </View>
+      );
+    }
+    return (<View />);// Return empty view for return consistency
   }
 
   render() {
     const { isSelected, sets } = this.state;
 
+    let num = 1;
     return (
       <TouchableOpacity
         onPress={() => (this.handlePress())}
@@ -221,7 +238,8 @@ class ExerciseCard extends React.Component {
           {
             // Render each set under it's respective exercise name
             sets.map((setObj) => (
-              this.getSetRow(setObj)
+              // eslint-disable-next-line no-plusplus
+              this.getSetRow(setObj, sets.length, num++)
             ))
           }
         </Card>

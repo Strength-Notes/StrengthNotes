@@ -152,7 +152,6 @@ class CreateExerciseScreen extends React.Component {
             <Text
               style={[
                 styles.createButtonText,
-                !formValid ? styles.createButtonTextInvalid : null,
               ]}
             >
               Create

@@ -60,13 +60,16 @@ class MaxEstimatorScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Card
-          title={
-            Number(repsInput) <= 10
-              ? 'Bryzcki Formula'
-              : 'Epley Formula'
-          }
-        >
+        <Card>
+          <Card.Title>
+            {
+              Number(repsInput) <= 10
+                ? 'Bryzcki Formula'
+                : 'Epley Formula'
+            }
+          </Card.Title>
+          <Card.Divider />
+
           <View style={styles.weightInputContainer}>
             <Text style={styles.weightLabel}>Weight</Text>
             <TextInput

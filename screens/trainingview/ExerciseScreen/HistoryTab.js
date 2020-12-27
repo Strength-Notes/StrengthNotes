@@ -213,6 +213,7 @@ class HistoryTab extends React.Component {
           />
 
           <SectionList
+            initialNumToRender={40}
             sections={this.getSections(sets, exerciseString)}
             renderSectionHeader={({ section }) => (
               <Text

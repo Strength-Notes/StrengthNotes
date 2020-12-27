@@ -85,6 +85,19 @@ class TrainingList extends React.Component {
     });
   }
 
+  componentDidUpdate() {
+    const {
+      sets,
+      date,
+      selectedExerciseNames,
+      updateNavigationHeader,
+    } = this.state;
+
+    const setsAtDate = getSetsAtDate(sets, date);
+
+    updateNavigationHeader(selectedExerciseNames, setsAtDate);
+  }
+
   isInSelectionMode = () => {
     const { selectedExerciseNames } = this.state;
     return selectedExerciseNames.length > 0;
@@ -111,13 +124,10 @@ class TrainingList extends React.Component {
       onClickCommentBox,
       xPositionOffset,
       selectedExerciseNames,
-      updateNavigationHeader,
     } = this.state;
     let { exerciseNamesToday } = this.state;
 
     const setsAtDate = getSetsAtDate(sets, date);
-
-    updateNavigationHeader(selectedExerciseNames, setsAtDate);
 
     if (!exerciseNamesToday) {
       exerciseNamesToday = getExercises(setsAtDate);

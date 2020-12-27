@@ -59,6 +59,13 @@ class AddExerciseScreen extends React.Component {
 
     this.removeExerciseDispatch = props.removeExerciseDispatch;
 
+    this.state = {
+      date: props.route.params.date,
+      exercises: props.exercises,
+    };
+  }
+
+  componentDidMount() {
     this.navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerBarRightContainer}>
@@ -75,11 +82,6 @@ class AddExerciseScreen extends React.Component {
         </View>
       ),
     });
-
-    this.state = {
-      date: props.route.params.date,
-      exercises: props.exercises,
-    };
   }
 
   // eslint-disable-next-line camelcase

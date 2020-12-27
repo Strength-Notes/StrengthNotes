@@ -34,73 +34,96 @@ const lazyPlaceholder = () => (
   </View>
 );
 
-const ExerciseScreen = ({ navigation, route }) => {
-  navigation.setOptions({
-    headerRight: () => (
-      <View style={styles.headerBarRightContainer}>
-        <Menu
-          ref={(ref) => { menuRef = ref; }}
-          button={(
-            <TouchableOpacity
-              style={styles.overflowMenuIcon}
+class ExerciseScreen extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { navigation, route } = props;
+
+    this.navigation = navigation;
+
+    this.state = { route };
+  }
+
+  componentDidMount() {
+    this.navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.headerBarRightContainer}>
+          <Menu
+            ref={(ref) => { menuRef = ref; }}
+            button={(
+              <TouchableOpacity
+                style={styles.overflowMenuIcon}
+                onPress={() => {
+                  menuRef.show();
+                }}
+              >
+                <Icon name="dots-three-vertical" size={32} />
+              </TouchableOpacity>
+            )}
+          >
+            <MenuItem
               onPress={() => {
-                menuRef.show();
+                this.navigation.navigate('MaxEstimatorScreen');
+                menuRef.hide();
               }}
             >
-              <Icon name="dots-three-vertical" size={32} />
-            </TouchableOpacity>
-          )}
-        >
-          <MenuItem
-            onPress={() => {
-              navigation.navigate('MaxEstimatorScreen');
-              menuRef.hide();
-            }}
-          >
-            1RM Estimator
-          </MenuItem>
-          <MenuItem
-            onPress={() => {
-              navigation.navigate('CoefficientCalculatorScreen');
-              menuRef.hide();
-            }}
-          >
-            Coefficient Calculator
-          </MenuItem>
-        </Menu>
-      </View>
-    ),
-  });
+              1RM Estimator
+            </MenuItem>
+            <MenuItem
+              onPress={() => {
+                this.navigation.navigate('CoefficientCalculatorScreen');
+                menuRef.hide();
+              }}
+            >
+              Coefficient Calculator
+            </MenuItem>
+          </Menu>
+        </View>
+      ),
+    });
+  }
 
-  return (
-    <Tab.Navigator
-      backBehavior="none"
-      lazy
-      lazyPlaceholder={lazyPlaceholder}
-      initialLayout={{
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-      }}
-    >
-      <Tab.Screen
-        name="EntryTab"
-        component={EntryTab}
-        options={{
-          title: 'Entry',
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(props) {
+    const { navigation, route } = props;
+    this.navigation = navigation;
+    this.setState({ route });
+  }
+
+  render() {
+    const { route } = this.state;
+
+    return (
+      <Tab.Navigator
+        backBehavior="none"
+        lazy
+        lazyPlaceholder={lazyPlaceholder}
+        initialLayout={{
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
         }}
-        initialParams={route.params}
-      />
-      <Tab.Screen
-        name="HistoryTab"
-        component={HistoryTab}
-        options={{
-          title: 'History',
-        }}
-        initialParams={route.params}
-      />
-    </Tab.Navigator>
-  );
-};
+      >
+        <Tab.Screen
+          name="EntryTab"
+          component={EntryTab}
+          options={{
+            title: 'Entry',
+          }}
+          initialParams={route.params}
+        />
+        <Tab.Screen
+          name="HistoryTab"
+          component={HistoryTab}
+          options={{
+            title: 'History',
+          }}
+          initialParams={route.params}
+        />
+      </Tab.Navigator>
+    );
+  }
+}
 
 ExerciseScreen.propTypes = {
   navigation: PropTypes.shape({

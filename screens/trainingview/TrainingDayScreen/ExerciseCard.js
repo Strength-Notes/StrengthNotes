@@ -167,6 +167,7 @@ class ExerciseCard extends React.Component {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   getSetRow = (setObj, numberOfSets, setNumber) => {
     let { exercise } = this.state;
 
@@ -217,7 +218,6 @@ class ExerciseCard extends React.Component {
         </View>
       );
     }
-    return (<View />);// Return empty view for return consistency
   }
 
   render() {

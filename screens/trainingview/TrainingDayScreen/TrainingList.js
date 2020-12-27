@@ -66,6 +66,19 @@ class TrainingList extends React.Component {
     BackHandler.addEventListener('hardwareBackPress', onBackPress);
   }
 
+  componentDidMount() {
+    const {
+      sets,
+      date,
+      selectedExerciseNames,
+      updateNavigationHeader,
+    } = this.state;
+
+    const setsAtDate = getSetsAtDate(sets, date);
+
+    updateNavigationHeader(selectedExerciseNames, setsAtDate);
+  }
+
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(newProps) {
     const {
@@ -83,19 +96,6 @@ class TrainingList extends React.Component {
       onClickCommentBox,
       xPositionOffset,
     });
-  }
-
-  componentDidUpdate() {
-    const {
-      sets,
-      date,
-      selectedExerciseNames,
-      updateNavigationHeader,
-    } = this.state;
-
-    const setsAtDate = getSetsAtDate(sets, date);
-
-    updateNavigationHeader(selectedExerciseNames, setsAtDate);
   }
 
   isInSelectionMode = () => {

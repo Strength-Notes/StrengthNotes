@@ -159,6 +159,7 @@ class AddExerciseScreen extends React.Component {
     return (
       <View style={styles.container}>
         <SectionList
+          initialNumToRender={40}
           sections={this.getOrganizedExercisesForList(exercises)}
           renderSectionHeader={({ section }) => (
             <Text style={styles.sectionHeader}>{section.key}</Text>

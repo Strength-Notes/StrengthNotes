@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import Menu, { MenuItem } from 'react-native-material-menu';
 import Icon from 'react-native-vector-icons/Feather';
 // eslint-disable-next-line import/no-named-default
 import { default as AntIcon } from 'react-native-vector-icons/AntDesign';
@@ -15,6 +16,8 @@ import { default as AntIcon } from 'react-native-vector-icons/AntDesign';
 import { default as MaterialCommunityIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 // eslint-disable-next-line import/no-named-default
 import { default as MaterialIcon } from 'react-native-vector-icons/MaterialIcons';
+// eslint-disable-next-line import/no-named-default
+import { default as EntypoIcon } from 'react-native-vector-icons/Entypo';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { removeSetAction, updateDayCommentAction } from '../../../redux/actions';
@@ -35,6 +38,10 @@ const styles = StyleSheet.create({
   },
   headerBarDayCommentButton: {
     margin: 10,
+    marginTop: 14,
+  },
+  overflowMenuIcon: {
+    marginRight: 6,
     marginTop: 14,
   },
   container: {
@@ -267,6 +274,28 @@ class TrainingDayScreen extends React.Component {
                 size={40}
               />
             </TouchableOpacity>
+            <Menu
+              ref={(ref) => { this.menuRef = ref; }}
+              button={(
+                <TouchableOpacity
+                  style={styles.overflowMenuIcon}
+                  onPress={() => {
+                    this.menuRef.show();
+                  }}
+                >
+                  <EntypoIcon name="dots-three-vertical" size={32} />
+                </TouchableOpacity>
+              )}
+            >
+              <MenuItem
+                onPress={() => {
+                  this.navigation.navigate('ImportScreen');
+                  this.menuRef.hide();
+                }}
+              >
+                Import CSV File
+              </MenuItem>
+            </Menu>
           </View>
         ),
       });

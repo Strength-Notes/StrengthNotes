@@ -3,6 +3,7 @@ import { REHYDRATE } from 'redux-persist';
 import arrayMove from 'array-move';
 import {
   ADD_SET,
+  ADD_MULTIPLE_SETS,
   UPDATE_SET,
   UPDATE_SET_COMMENT,
   REMOVE_SET,
@@ -10,6 +11,7 @@ import {
   REORDER_SETS_OF_EXERCISE,
   UPDATE_DAY_COMMENT,
   ADD_EXERCISE,
+  ADD_MULTIPLE_EXERCISES,
   REMOVE_EXERCISE,
 } from './actions';
 import { getSetsOfExercise } from './organizers';
@@ -115,6 +117,19 @@ function setsReducer(state = [{}], action) {
       }
       return newState;
     }
+    case ADD_MULTIPLE_SETS: {
+      const sets = action.payload;
+
+      sets.forEach((set) => {
+        const { date } = set;
+        if (newState[0][date] === undefined) {
+          newState[0][date] = [set];
+        } else {
+          newState[0][date] = [...newState[0][date], set];
+        }
+      });
+      return newState;
+    }
     case UPDATE_SET: {
       const set = action.payload;
       const { date, key } = set;
@@ -196,6 +211,22 @@ function exercisesReducer(state = initialExercisesState, action) {
         // Otherwise, update the currently existing exercise def
         newState[index] = action.payload;
       }
+      return newState;
+    }
+    case ADD_MULTIPLE_EXERCISES: {
+      const exercises = action.payload;
+
+      exercises.forEach((exercise) => {
+        const index = findExerciseInArrayByName(newState, exercise.name);
+
+        // Only add the new exercise def if no other exists with same name
+        if (index === -1) {
+          newState = [...newState, exercise];
+        } else {
+          // Otherwise, update the currently existing exercise def
+          newState[index] = exercise;
+        }
+      });
       return newState;
     }
     case REMOVE_EXERCISE: {

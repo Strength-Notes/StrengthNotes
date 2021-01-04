@@ -11,6 +11,7 @@ import AddExerciseScreen from './trainingview/AddExerciseScreen';
 import CreateExerciseScreen from './trainingview/CreateExerciseScreen';
 import MaxEstimatorScreen from './trainingview/MaxEstimatorScreen';
 import CoefficientCalculatorScreen from './trainingview/CoefficientCalculatorScreen';
+import ImportScreen from './trainingview/ImportScreen';
 
 const styles = StyleSheet.create({
   calendarHeaderRight: {
@@ -67,6 +68,7 @@ const TrainingView = ({ navigation }) => (
     <TrainingStack.Screen name="CreateExerciseScreen" component={CreateExerciseScreen} />
     <TrainingStack.Screen name="MaxEstimatorScreen" component={MaxEstimatorScreen} />
     <TrainingStack.Screen name="CoefficientCalculatorScreen" component={CoefficientCalculatorScreen} />
+    <TrainingStack.Screen name="ImportScreen" component={ImportScreen} />
   </TrainingStack.Navigator>
 );
 

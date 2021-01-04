@@ -10,11 +10,12 @@ import {
   REMOVE_ALL_SETS,
   MOVE_SET,
   REORDER_SETS_OF_EXERCISE,
-  UPDATE_DAY_COMMENT,
   ADD_EXERCISE,
   ADD_MULTIPLE_EXERCISES,
   REMOVE_EXERCISE,
   REMOVE_ALL_EXERCISES,
+  UPDATE_DAY_COMMENT,
+  REMOVE_ALL_DAY_COMMENTS,
 } from './actions';
 import { getSetsOfExercise } from './organizers';
 import ExerciseProperties from './ExerciseProperties';
@@ -241,7 +242,7 @@ function exercisesReducer(state = initialExercisesState, action) {
       return newState;
     }
     case REMOVE_ALL_EXERCISES: {
-      return [{}]; // Return empty state with no exercises
+      return []; // Return empty state with no exercises
     }
     case REHYDRATE: {
       if (action.payload) {
@@ -265,9 +266,13 @@ function dayCommentsReducer(state = [{}], action) {
       newState[0][date] = newComment;
       return newState;
     }
+    case REMOVE_ALL_DAY_COMMENTS: {
+      return [{}]; // Return default state with no comments
+    }
     case REHYDRATE: {
       if (action.payload) {
-        newState = action.payload.exercises;
+        console.log(action.payload);
+        newState = action.payload.dayComments;
       }
       return newState;
     }

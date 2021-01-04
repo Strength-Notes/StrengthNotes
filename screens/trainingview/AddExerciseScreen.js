@@ -127,6 +127,8 @@ class AddExerciseScreen extends React.Component {
     const organizedExercises = {};
 
     exercises.forEach((exercise) => {
+      if (!exercise.name) return; // Ignore null or nameless exercise defs
+
       let { category } = exercise;
 
       // If it's undefined, it's now a Misc!

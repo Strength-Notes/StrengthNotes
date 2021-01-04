@@ -6,12 +6,14 @@ export const REMOVE_SET = 'REMOVE_SET';
 export const REMOVE_ALL_SETS = 'REMOVE_ALL_SETS';
 export const MOVE_SET = 'MOVE_SET';
 export const REORDER_SETS_OF_EXERCISE = 'REORDER_SETS_OF_EXERCISE';
-export const UPDATE_DAY_COMMENT = 'UPDATE_DAY_COMMENT';
 
 export const ADD_EXERCISE = 'ADD_EXERCISE';
 export const ADD_MULTIPLE_EXERCISES = 'ADD_MULTIPLE_EXERCISES';
 export const REMOVE_EXERCISE = 'REMOVE_EXERCISE';
 export const REMOVE_ALL_EXERCISES = 'REMOVE_ALL_EXERCISES';
+
+export const UPDATE_DAY_COMMENT = 'UPDATE_DAY_COMMENT';
+export const REMOVE_ALL_DAY_COMMENTS = 'REMOVE_ALL_DAY_COMMENTS';
 
 export const addSetAction = (update) => ({
   type: ADD_SET,
@@ -26,14 +28,6 @@ export const addMultipleSetsAction = (sets) => ({
 export const updateSetAction = (set) => ({
   type: UPDATE_SET,
   payload: set,
-});
-
-export const updateSetCommentAction = (set, newComment) => ({
-  type: UPDATE_SET_COMMENT,
-  payload: {
-    set,
-    newComment,
-  },
 });
 
 export const removeSetAction = (set) => ({
@@ -86,4 +80,16 @@ export const removeExerciseAction = (exercise) => ({
 
 export const removeAllExercisesAction = () => ({
   type: REMOVE_ALL_EXERCISES,
+});
+
+export const updateSetCommentAction = (set, newComment) => ({
+  type: UPDATE_SET_COMMENT,
+  payload: {
+    set,
+    newComment,
+  },
+});
+
+export const removeAllDayCommentsAction = () => ({
+  type: REMOVE_ALL_DAY_COMMENTS,
 });

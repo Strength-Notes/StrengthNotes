@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import {
   removeSetAction,
   removeAllSetsAction,
+  removeAllDayCommentsAction,
   removeAllExercisesAction,
   updateDayCommentAction,
 } from '../../../redux/actions';
@@ -85,6 +86,7 @@ class TrainingDayScreen extends React.Component {
 
     this.removeSetDispatch = props.removeSetDispatch;
     this.removeAllSetsDispatch = props.removeAllSetsDispatch;
+    this.removeAllDayCommentsDispatch = props.removeAllDayCommentsDispatch;
     this.removeAllExercisesDispatch = props.removeAllExercisesDispatch;
     this.updateDayCommentDispatch = props.updateDayCommentDispatch;
 
@@ -312,7 +314,10 @@ class TrainingDayScreen extends React.Component {
                       { text: 'Cancel', style: 'cancel' },
                       {
                         text: 'Yes, delete',
-                        onPress: this.removeAllSetsDispatch,
+                        onPress: () => {
+                          this.removeAllSetsDispatch();
+                          this.removeAllDayCommentsDispatch();
+                        },
                       },
                     ],
                   );
@@ -424,6 +429,7 @@ TrainingDayScreen.propTypes = {
   }).isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
   removeAllSetsDispatch: PropTypes.func.isRequired,
+  removeAllDayCommentsDispatch: PropTypes.func.isRequired,
   removeAllExercisesDispatch: PropTypes.func.isRequired,
   updateDayCommentDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
@@ -437,6 +443,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   removeAllSetsDispatch: () => {
     dispatch(removeAllSetsAction());
+  },
+  removeAllDayCommentsDispatch: () => {
+    dispatch(removeAllDayCommentsAction());
   },
   removeAllExercisesDispatch: () => {
     dispatch(removeAllExercisesAction());

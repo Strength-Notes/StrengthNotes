@@ -271,7 +271,6 @@ function dayCommentsReducer(state = [{}], action) {
     }
     case REHYDRATE: {
       if (action.payload) {
-        console.log(action.payload);
         newState = action.payload.dayComments;
       }
       return newState;

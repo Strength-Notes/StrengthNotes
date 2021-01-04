@@ -15,6 +15,7 @@ import ExerciseProperties from '../../redux/ExerciseProperties';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 12,
   },
 });
 
@@ -124,6 +125,12 @@ class ImportScreen extends React.Component {
         type: 'text/*',
         multiple: false,
       });
+
+      if (result.type === 'cancel') {
+        // If the user cancelled the document picker, return and show cancelled screen
+        this.setState({ status: Status.CANCELLED });
+        return;
+      }
 
       this.setState({ status: Status.LOADING });
 

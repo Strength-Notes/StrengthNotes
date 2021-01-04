@@ -5,6 +5,7 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
@@ -20,7 +21,12 @@ import { default as MaterialIcon } from 'react-native-vector-icons/MaterialIcons
 import { default as EntypoIcon } from 'react-native-vector-icons/Entypo';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removeSetAction, updateDayCommentAction } from '../../../redux/actions';
+import {
+  removeSetAction,
+  removeAllSetsAction,
+  removeAllExercisesAction,
+  updateDayCommentAction,
+} from '../../../redux/actions';
 import { getFormattedDateString, getDateObjectFromString, getSetsOfExercise } from '../../../redux/organizers';
 import TrainingList from './TrainingList';
 import CommentModal from '../CommentModal';
@@ -78,6 +84,8 @@ class TrainingDayScreen extends React.Component {
     this.navigation = props.navigation;
 
     this.removeSetDispatch = props.removeSetDispatch;
+    this.removeAllSetsDispatch = props.removeAllSetsDispatch;
+    this.removeAllExercisesDispatch = props.removeAllExercisesDispatch;
     this.updateDayCommentDispatch = props.updateDayCommentDispatch;
 
     this.state = {
@@ -295,6 +303,40 @@ class TrainingDayScreen extends React.Component {
               >
                 Import CSV File
               </MenuItem>
+              <MenuItem
+                onPress={() => {
+                  Alert.alert(
+                    'Are you sure?',
+                    'All logged sets will be PERMANENTLY deleted!',
+                    [
+                      { text: 'Cancel', style: 'cancel' },
+                      {
+                        text: 'Yes, delete',
+                        onPress: this.removeAllSetsDispatch,
+                      },
+                    ],
+                  );
+                }}
+              >
+                Delete all recorded sets
+              </MenuItem>
+              <MenuItem
+                onPress={() => {
+                  Alert.alert(
+                    'Are you sure?',
+                    'All exercise definitions will be PERMANENTLY deleted!',
+                    [
+                      { text: 'Cancel', style: 'cancel' },
+                      {
+                        text: 'Yes, delete',
+                        onPress: this.removeAllExercisesDispatch,
+                      },
+                    ],
+                  );
+                }}
+              >
+                Delete all exercise definitions
+              </MenuItem>
             </Menu>
           </View>
         ),
@@ -381,6 +423,8 @@ TrainingDayScreen.propTypes = {
     }).isRequired,
   }).isRequired,
   removeSetDispatch: PropTypes.func.isRequired,
+  removeAllSetsDispatch: PropTypes.func.isRequired,
+  removeAllExercisesDispatch: PropTypes.func.isRequired,
   updateDayCommentDispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
@@ -390,6 +434,12 @@ TrainingDayScreen.propTypes = {
 const mapDispatchToProps = (dispatch) => ({
   removeSetDispatch: (setObj) => {
     dispatch(removeSetAction(setObj));
+  },
+  removeAllSetsDispatch: () => {
+    dispatch(removeAllSetsAction());
+  },
+  removeAllExercisesDispatch: () => {
+    dispatch(removeAllExercisesAction());
   },
   updateDayCommentDispatch: (date, newComment) => {
     dispatch(updateDayCommentAction(date, newComment));

@@ -7,12 +7,14 @@ import {
   UPDATE_SET,
   UPDATE_SET_COMMENT,
   REMOVE_SET,
+  REMOVE_ALL_SETS,
   MOVE_SET,
   REORDER_SETS_OF_EXERCISE,
   UPDATE_DAY_COMMENT,
   ADD_EXERCISE,
   ADD_MULTIPLE_EXERCISES,
   REMOVE_EXERCISE,
+  REMOVE_ALL_EXERCISES,
 } from './actions';
 import { getSetsOfExercise } from './organizers';
 import ExerciseProperties from './ExerciseProperties';
@@ -160,6 +162,9 @@ function setsReducer(state = [{}], action) {
       );
       return newState;
     }
+    case REMOVE_ALL_SETS: {
+      return [{}]; // Return default state with no sets
+    }
     case MOVE_SET: {
       const { set, distanceMoved } = action.payload;
       const { date } = set;
@@ -234,6 +239,9 @@ function exercisesReducer(state = initialExercisesState, action) {
         (element) => (element.name !== action.payload.name),
       );
       return newState;
+    }
+    case REMOVE_ALL_EXERCISES: {
+      return [{}]; // Return empty state with no exercises
     }
     case REHYDRATE: {
       if (action.payload) {
